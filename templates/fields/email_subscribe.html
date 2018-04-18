@@ -1,0 +1,70 @@
+   <div class="subscribe" ng-style="{'margin' : subscribepos == 'mobilemenu' ? '20px 0 0 0' : '', 'border': subscribepos == 'mobilemenu' ? 'none' : ''}">
+     <div class="title title-extra" ng-bind-html="(area.field_promo_cta.hasOwnProperty('und') && area.field_promo_cta.und[0].value != '') ? area.field_promo_cta.und[0].value : '' | sanitize"></div>
+   <a href="#" class="subscribe-close" ng-class="{'hover':hovering}"
+    ng-if="subscribepos == 'popup'"
+    ng-mouseenter="hovering=true"
+    ng-mouseleave="hovering=false"
+    ng-click="setSubscribeStatus($event, 'annoyed')"
+        analytics-on="click"
+        analytics-category="newsletter-subscribe"
+        analytics-event="close popup"
+        analytics-label="{{'close popup ' + subscribepos}}"
+    >x</a>
+     <div ng-if="subscribepos != 'popup'" class="title">Sign up for our free newsletters.</div>
+     <div class="subscribebox">
+      <form action="https://mommypoppins.us2.list-manage.com/subscribe" method="GET" target="_blank" ng-submit="setSubscribeStatus('subscribed')"
+        style="max-width: 280px;">
+        <input class="subscribe-email" type="text" size="20" placeholder="Your email address" name="MERGE0" />
+        <input type="hidden" name="u" value="bdc1aa2618e8751c4b2b6acf6">
+        <input type="hidden" name="id" value="51ccfd15a8">
+        <input
+          type="submit"
+          value="Sign Up"
+          name="submit"
+          analytics-on="click"
+          analytics-category="newsletter-subscribe"
+          analytics-event="subscribe"
+          analytics-label="{{'subscribe submit ' + subscribepos}}"
+          class="submit"
+          />
+      </form>
+      <img
+        src
+        ng-if="subscribepos == 'popup' && (!area.field_promo_image_link.hasOwnProperty('und') || area.field_promo_image_link.und[0].url == '') && ((area.field_promo_active.hasOwnProperty('und') && area.field_promo_active.und[0].value == 1) || subscribePromoDate)"
+        ng-src="{{(area.field_promo_active.hasOwnProperty('und') && area.field_promo_active.und[0].value == 1) ? (area.field_promo_image.hasOwnProperty('und') ? area.field_promo_image.und[0].uri.replace('s3://', domainImages + '/') : '') : subscribePromoDate ? promoImage : ''}}"
+        class="subscribe-image"
+        />
+      <a
+        ng-if="subscribepos == 'popup' && (area.field_promo_image_link.hasOwnProperty('und') && area.field_promo_image_link.und[0].url != '') && ((area.field_promo_active.hasOwnProperty('und') && area.field_promo_active.und[0].value == 1) || subscribePromoDate)"
+        ng-click="promoLink($event, '/' + area.field_promo_image_link.und[0].url)"
+        analytics-on="click"
+        analytics-category="newsletter-subscribe"
+        analytics-event="click image"
+        analytics-label="{{'subscribe image click ' + subscribepos}}"
+        class="link"
+        href="#"
+        >
+        <img
+          src
+          ng-src="{{(area.field_promo_active.hasOwnProperty('und') && area.field_promo_active.und[0].value == 1) ? (area.field_promo_image.hasOwnProperty('und') ? area.field_promo_image.und[0].uri.replace('s3://', domainImages + '/') : '') : subscribePromoDate ? promoImage : ''}}"
+          class="subscribe-image"
+          ng-style="{'max-width': height < 500 ? '200px' : ''}"
+          />
+      </a>
+      <div
+        ng-if="subscribepos == 'popup' && (area.field_promo_image_link.hasOwnProperty('und') && area.field_promo_image_link.und[0].url != '') && ((area.field_promo_active.hasOwnProperty('und') && area.field_promo_active.und[0].value == 1) || subscribePromoDate)"
+          style="margin-top: 10px; font-size: 1.1em; font-weight: 300; color:#FFF;"
+        >
+        <a
+          href="/user/register"
+          target="_self"
+          style="color:#FFF; text-decoration: underline;"
+          >Register</a>/<a
+          href="/user/login"
+          target="_self"
+          style="color:#FFF; text-decoration: underline;"
+          >Login</a> if you don't want to see this popup.
+      </div>
+    </div>
+  </div>
+

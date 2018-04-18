@@ -1,0 +1,110 @@
+<div class="sponsored-wrapper">
+  <div class="content-wrapper">
+    <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-3'}}" serve-ad ad-unit="textad" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-3'}}">
+    </div>
+  </div>
+</div>
+<div class="main-wrapper content-wrapper">
+<div class="main-content content-wrapper">
+  <div class="sidebar-wrapper">
+    <div id="sidebar-links" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/sidebar.html'" ng-init="widget = 'events'" class="sidebar-widget"></div>
+  </div><!-- end sidebar-wrapper -->
+  <div class="main-wrapper">
+    <h1><em>Event</em> Calendar</h1>
+    <div class="filters-wrapper">
+      <div class="filters-title">Filters:</div>
+      <span id="search-group" class="filter text" >
+        <input type="text" class="form-control event-search" ng-model="searchWords" ng-keypress="changeSearchWords($event, searchWords)" placeholder="Search word or zip code" />
+        <button ng-show="searchWords" ng-click="searchWords = ''; changeSearchWords($event, searchWords)">X</button>
+      </span>
+      <span id="filter-date-form" class="filter text">
+        <form name="dateForm" id="date-group">
+           <div class="from"><input type="text" uib-datepicker-popup="{{'MM/dd/yyyy'}}" on-open-focus="true" show-weeks="false" show-button-bar="false" class="form-control" name="startdate" ng-model="startDate" ng-change="eventDateChange(startDate, 'start')" min-date="{{minDate}}" placeholder="start date" ng-click="startOpen=true" ng-init="startOpen = false" is-open="startOpen" /></div>
+           <div class="to"><input type="text" uib-datepicker-popup="{{'MM/dd/yyyy'}}" on-open-focus="true" show-weeks="false" show-button-bar="false" class="form-control" name="enddate" ng-model="endDate" ng-change="eventDateChange(endDate, 'end')" min-date="{{startDate}}" placeholder="end date"  ng-click="endOpen=true" ng-init="endOpen = false" is-open="endOpen"/></div>
+        </form>
+      </span>
+      <span class="filter">
+        <div>
+          <button ng-click="f.ages.status.open = !f.ages.status.open" ng-class="{'active' : f.ages.status.open}">Ages</button>
+          <button ng-click="f.tags.status.open = !f.tags.status.open" ng-class="{'active' : f.tags.status.open}">Tags</button>
+          <button ng-click="f.locations.status.open = !f.locations.status.open" ng-class="{'active' : f.locations.status.open}">Locations</button>
+          <button ng-click="f.near.status.open = !f.near.status.open" ng-class="{'active' : f.near.status.open}">Near</button>
+        </div>
+        <div class="tabs-horiz">
+          <uib-accordion close-others="true">
+            <uib-accordion-group is-open="f.ages.status.open" ng-init="f.ages.status.open = false">
+                <div id="ages-group" class="filters" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/search-filter.html'" ng-controller="SearchFiltersController" ng-init="serviceType = 'events'; itemType = 'eventAges'; label = 'ages'"></div>
+            </uib-accordion-group>
+            <!--uib-accordion-group heading="Types">
+                <div id="types-group" class="filters" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/search-filter.html'}" ng-controller="SearchFiltersController" ng-init="serviceType = 'events'; itemType = 'eventTypes'; label = 'types'"></div>
+            </uib-accordion-group-->
+            <uib-accordion-group is-open="f.tags.status.open" ng-init="f.tags.status.open = false">
+                <div id="tags-group" class="filters" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/search-filter.html'" ng-controller="SearchFiltersController" ng-init="serviceType = 'events'; itemType = 'eventTags'; label = 'tags'"></div>
+            </uib-accordion-group>
+            <uib-accordion-group is-open="f.locations.status.open" ng-init="f.locations.status.open = false">
+                <div id="neighborhood-group" class="filters" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/search-filter.html'" ng-controller="SearchFiltersController" ng-init="serviceType = 'events'; itemType = 'eventsNeighborhoods'; label ='locations'"></div>
+            </uib-accordion-group>
+            <uib-accordion-group class="near-me" is-open="f.near.status.open" ng-init="f.near.status.open = false">
+              <span>Search within <input type="number" ng-model="searchRadius"/>miles.</span>
+              <a class="btn btn-primary" ng-click="findNearUser(searchRadius)" analytics-on="click" analytics-category="searchFilters" analytics-event="filterClick-events" analytics-label="near-go" ng-attr-id="events-near-go">Go</a>
+            </uib-accordion-group>
+          </uib-accordion>
+        </div>
+      </span>
+      <br class="clear" />
+  </div><!-- end filters-wrapper -->
+    <div id="tab-buttons">
+      <a href
+        ui-sref="tabs.search({'keys': (searchWords && searchWords != '' && searchWords != undefined ? searchWords : '')})"
+        >Articles
+      </a>
+      <a href
+        ui-sref="tabs.directory({'area': (area && area.tid ? area.tid : ''), 'keys': (searchWords && searchWords != '' ? searchWords : '') })"
+        >Directory
+      </a>
+      <div
+        class="active"
+        >Events
+      </div>
+    </div>
+        <div class="selections">
+           <div ng-repeat="tag in showTags track by $index" class="tag" ng-class="tag.filterName">{{ tag.name }} <a href ng-click="removeFilter('events', tag.filterName, tag)">X</a></div>
+        </div>
+    <div class="results-wrapper map-wrapper">
+      <uib-accordion close-others="false">
+      <uib-accordion-group heading="{{ totalListings > 0 ? 'Showing ' + totalPage + ' of ' + totalListings + ' events. Use filters to refine results.' : totalListings == 0 ? 'No results. Change filters to try again.' : 'searching...' }}" ng-init="mapStatus.open=false" is-open="mapStatus.open">
+        <div id="map_canvas">
+          <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" dragging="true" options="options" pan="true">
+            <ui-gmap-markers models="markers" coords="'self'" fit="true">
+              <ui-gmap-marker idKey="marker.id" ng-repeat="marker in markers" coords="marker.coords" options="marker.options" icon="marker.icon" doCluster="map.doCluster" ng-click="marker.showInfo = true" ng-init="marker.showInfo = false">
+                <marker-label content="marker.name" anchor="2 0" class="marker-labels"/>
+                  <ui-gmap-window ng-cloak  coords="marker.coords" isIconVisibleOnClick="true" options="options" show="marker.showInfo"  closeClick="$root.popNodeClose()">
+                    <div class="map-infowindow" ng-class="{'small': marker.content.image == ''}">
+                      <img ng-if="marker.content.image != ''" ng-src="{{marker.content.image | s3url: 'image140x116'}}">
+                      <strong>{{marker.content.title}}</strong>
+                      <div ng-hide="marker.content.when == ''"><label>When:</label> {{marker.content.when}}</div>
+                      <div ng-hide="marker.content.where == ''"><label>Where:</label> {{marker.content.where}}</div>
+                      <div ng-if="marker.content.link != ''"><a href ng-click="$root.popNode({{marker.content.nid}})" class="read-more">read more<span class="chevron right"></span></a></div>
+                      <div ng-if="marker.content.delta !== null && marker.content.delta != ''" class="add-links"><label>Add to Calendar:</label> 
+                        <a ng-href="{{ marker.content.link + '?cal=google&delta=' + marker.content.delta}}" target="_blank" rel="nollow" analytics-on="click" analytics-category="calendar" analytics-event="calendarAddClick" analytics-label="{{'calendarAdd-google-map'}}" ng-attr-id="{{'calendarAdd-google-map-' + marker.content.nid}}">Google</a> | 
+                        <a ng-href="{{ marker.content.link + '?cal=yahoo&delta=' + marker.content.delta}}" target="_blank" rel="nollow" analytics-on="click" analytics-category="calendar" analytics-event="calendarAddClick" analytics-label="{{'calendarAdd-yahoo-map'}}" ng-attr-id="{{'calendarAdd-yahoo-map-' + marker.content.nid}}">Yahoo</a> | 
+                        <a ng-href="{{ marker.content.link + '?cal=ical&delta=' + marker.content.delta}}" target="_blank" rel="nollow" analytics-on="click" analytics-category="calendar" analytics-event="calendarAddClick" analytics-label="{{'calendarAdd-ical-map'}}" ng-attr-id="{{'calendarAdd-ical-map-' + marker.content.nid}}">iCal</a>
+                      </div>
+                    </div>
+                  </ui-gmap-window>
+              </ui-gmap-marker>
+            </ui-gmap-markers>
+          </ui-gmap-google-map>
+        </div>
+        </uib-accordion-group>
+        <!--div class="close-map"><a href ng-click="mapStatus.open = !mapStatus.open">{{mapStatus.open ? 'Close' : 'Open'}} Map <strong>X</strong></a></div
+        -->
+          <div ng-show="mapStatus.open && totalListings > 0" class="close-map"><a href ng-click="mapStatus.open = false">Close Map <strong>X</strong></a></div>
+          <div ng-show="!mapStatus.open && totalListings > 0" class="open-map"><a href ng-click="mapOpen()" analytics-on="click" analytics-category="map" analytics-event="mapClick" analytics-label="events-map-view-click" id="events-map-view"><i class="fa fa-map-marker" aria-hidden="true"></i> Show map of locations</a></div>
+      </uib-accordion>
+      <div id="the-list" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/list.html'" ng-controller="TheListController" ng-init="listType = 'eventsListing'"></div>
+    </div><!-- end results-wrapper  -->
+  </div><!-- end bottom-wrapper -->
+  </div><!-- end main-wrapper -->
+  </div><!-- end main-content content-wrapper -->
+</div>

@@ -1,8 +1,58 @@
-<html>
-	<head>
-	  <title>MP</title>
-	</head>
-	<body>
-Hello World
-	</body>
+
+<!DOCTYPE html>
+<html  lang="en" dir="ltr" prefix="og: http://ogp.me/ns# article: http://ogp.me/ns/article# book: http://ogp.me/ns/book# profile: http://ogp.me/ns/profile# video: http://ogp.me/ns/video# product: http://ogp.me/ns/product# content: http://purl.org/rss/1.0/modules/content/ dc: http://purl.org/dc/terms/ foaf: http://xmlns.com/foaf/0.1/ rdfs: http://www.w3.org/2000/01/rdf-schema# sioc: http://rdfs.org/sioc/ns# sioct: http://rdfs.org/sioc/types# skos: http://www.w3.org/2004/02/skos/core# xsd: http://www.w3.org/2001/XMLSchema#" >
+
+<head profile="http://www.w3.org/1999/xhtml/vocab">
+  <meta charset="utf-8" />
+  <title>Mommy Poppins - Things to Do with Kids </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<link type="text/css" rel="stylesheet" href="js/css/main.vendor.css" media="all" />
+<link type="text/css" rel="stylesheet" href="css/styles.css" media="all" />
+<script src="misc/jquery.js"></script>
+<script src="misc/jquery.once.js"></script>
+</head>
+<body class="html front not-logged-in no-sidebars page-frontpage page-views" >
+    <!--[if (gte IE 9)|(! IE)]><!-->
+<div id="page-loading" style="text-align: center">Loading...</div>
+<div id="page" ng-app="ngMPWorld" ng-controller="AppController" ng-init="id = 'frontpage';env = 'prod';ngdomain = 'https://mommypoppins.com/';current_path='frontpage';cachebuster='3_1758e';messages='%5B%5D';" ng-cloak>
+  <div id="header" ng-include="" src="templates/header.html" ng-init="inNG = 1" ng-class="{'mobile-nav': width && width < 1024, 'desktop-nav': width >= 1024}"></div>
+    <div id="main">
+            <div id="wrapper-div-gpt-ad-1449283335054-0" serve-ad ad-unit="billboard" slot-slug="div-gpt-ad-1449283335054-0">
+      </div>
+      <ui-view>
+      </ui-view>
+      <div ng-include="" src="templates/footer.html"></div>
+      <!--<![endif]-->
+
+
+  </div><!-- /#main -->
+
+  
+
+<!--[if (gte IE 9)|(! IE)]><!-->
+      <div class="venue-outer-wrapper">
+<div class="venue-wrapper topover" uib-collapse="venueIsCollapsed"
+ ng-class="{'promo': venueIsCollapsed == false}"
+>
+  <div ng-include="" src="templates/venue_card.html" class="venuebox" ng-init="venuepos = 'popup'"></div>
+</div>
+<br class="clear" />
+</div><!-- end of venue outer wrapper -->
+<div class="subscribe-outer-wrapper">
+<div class="subscribe-wrapper topover" uib-collapse="subscribeIsCollapsed"
+ ng-class="{'promo': subscribeIsCollapsed == false}"
+>
+  <div ng-include="" src="templates/fields/email_subscribe.html" class="subscribebox" ng-init="subscribepos = 'popup'"></div>
+</div>
+<br class="clear" />
+</div><!-- end of subscribe outer wrapper -->
+      <!--<![endif]-->
+
+</div><!-- /#page -->
+
+
+  <script async src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASwOTaIFN1A09am8gIuOL05Xv5H7rJlTI"></script>
+</body>
+<script src="js/main.min.js"></script>
 </html>
+

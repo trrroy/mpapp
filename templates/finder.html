@@ -1,0 +1,28 @@
+    <div class="title">Find the best classes, parties, family fun and more: </div>
+
+    <!-- Single button -->
+  <nobr>
+    <span class="btn-group type-button" uib-dropdown is-open="finder.type.isopen">
+      <button id="finder-type-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+        {{finderLabelType ? finderLabelType : 'Find Listings'}} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="finder-type-button">
+        <li ng-repeat="type in finderTypes" role="menuitem"><a href="#" ng-click="setFind('type', type.tid, type.name)" analytics-on="click" analytics-category="header" analytics-event="finderClick" analytics-label="types-{{type.name}}"  ng-attr-id="{{'finder-types-' + $index}}">{{type.name}}</a></li>
+      </ul>
+    </span>
+
+    <!-- Single button -->
+    <span class="btn-group area-button" uib-dropdown is-open="finder.area.isopen">
+      <button id="finder-area-button" type="button" class="btn btn-primary" uib-dropdown-toggle ng-disabled="disabled">
+        {{finderLabelArea ? 'in ' + finderLabelArea : 'By Location'}} <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" uib-dropdown-menu role="menu" aria-labelledby="finder-area-button">
+        <li ng-repeat="region in finderRegions" role="menuitem"><a href="#" ng-click="setFind('region', region.tid, region.name)" analytics-on="click" analytics-category="header" analytics-event="finderClick" analytics-label="areas-{{region.name}}"  ng-attr-id="{{'finder-areas-' + $index}}">{{region.name}}</a></li>
+      </ul>
+    </span>
+  </nobr>
+
+
+
+  <!--input type="submit" ng-click="sendFind()" value="Go" name="submit"/-->
+

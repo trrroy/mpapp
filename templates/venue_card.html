@@ -1,0 +1,75 @@
+   <a href="#" class="venue-close" ng-class="{'hover':hovering}"
+    ng-mouseenter="hovering=true"
+    ng-mouseleave="hovering=false"
+    ng-click="setVenueStatus($event, true)"
+        analytics-on="click"
+        analytics-category="venue"
+        analytics-event="close venue"
+        analytics-label="{{'close venue ' + venuepos}}"
+    >x</a>
+<div
+  ng-style="{'max-height' : height < 800 ? height-80 + 'px' : '', 'overflow-y': 'auto', 'padding-bottom' : '1em'}"
+  >
+      <img class="lead-image"
+        ng-repeat="listing in currentVenueList | filter: {type: 'directory'} | limitTo:1"
+        ng-if="listing.hasOwnProperty('field_images') && listing.field_images.hasOwnProperty('und') && listing.field_images['und'].length > 0" 
+        ng-src="{{listing.field_images.und[0].uri | s3url: width && width < 970 ? 'image300x250' : 'image620x420'}}"
+        title="{{listing.title}}"
+      >
+      <img class="lead-image"
+        ng-repeat="listing in currentVenueList | filter: {type: 'directory'} | limitTo:1"
+        ng-if="!(listing.hasOwnProperty('field_images') && listing.field_images.hasOwnProperty('und') && listing.field_images['und'].length > 0) && listing.hasOwnProperty('field_image') && listing.field_image.hasOwnProperty('und') && listing.field_image['und'].length > 0" 
+        ng-src="{{listing.field_image.und[0].uri | s3url: width && width < 970 ? 'image300x250' : 'image620x420'}}"
+        title="{{listing.title}}"
+      >
+<div
+  ng-style="{'font-size': '1.5em', 'padding': '10px 5px'}"
+  ><strong>{{currentVenueList.location_name}}:</strong>
+</div>
+  <div
+    ng-repeat="listing in currentVenueList | filter: {type: 'directory'} | limitTo:1"
+    ng-bind-html="venueBody(listing) | sanitize"></div>
+<br class="clear" />
+<div
+  ng-style="{'padding': '0 0 0 10px'}"
+  class="detail"
+  ng-class="{sponsored : venue.field_sponsored_field_sponsored_value == '1'}"
+  ng-repeat="venue in currentVenueList"
+  >
+  <strong
+    ng-style="{'padding' : '10px 0 0 0', 'color': '#333333'}"
+    ng-if="$index == 0 || venue.location_address.substring(0,4) != currentVenueList[$index-1].location_address.substring(0,4)"
+    style="text-transform: capitalize;"
+    >{{venue.location_address}}
+  </strong>
+  <div
+    ng-style="{'padding' : '6px 0 0 5px', 'color': '#c264a3'}"
+    ng-if="$index == 0 || venue.node_type != currentVenueList[$index-1].node_type || (venue.node_type == currentVenueList[$index-1].node_type && venue.location_address.substring(0,4) != currentVenueList[$index-1].location_address.substring(0,4))"
+    style="text-transform: capitalize;"
+    >{{venue.node_type == 'events' ? 'upcoming ' + venue.node_type : venue.node_type}}
+  </div>
+  <div
+    >
+    <div
+      ng-style="{'padding' : '0 0 0 10px',}"
+      >
+      <a
+        href
+        ui-sref="tabs.node({ path: venue.node_url, nid: venue.nid, tid: undefined, page: undefined })"
+        analytics-on="click" analytics-category="venue-{{currentVenueList.page_title + '-' + currentVenueList.location_name}}" analytics-event="sidebarClick" analytics-label="{{'link-venue_card-' + venue.node_title.replace(title_replace_pattern, '_').toLowerCase()}}"
+        analytics-on="click" analytics-category="venue" analytics-event="click" analytics-label="venue link"
+        ng-style="{'margin-left': '5px'}"
+        title="{{venue.location_address}}"
+        >{{venue.title}}
+      </a>
+      <span ng-if="venue.field_pick_field_pick_value == '1'" class="tag pick">Pick</span>
+      <div
+        style="line-height: .8em; padding-left: 5px; padding-bottom: 5px;"
+        ng-if="venue.hasOwnProperty('field_event_date')"
+        >({{venue.event_date != venue.event_date_last ? venue.event_date + ' - ' + venue.event_date_last : venue.event_date}})
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>

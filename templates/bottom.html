@@ -1,0 +1,71 @@
+<div ng-if="item && item.hasOwnProperty('nid') && (adParams.page == 'article' || adParams.page == 'event' || adParams.page == 'guide' || adParams.page == 'areaguide' ||  adParams.page == 'cityguide')">
+  <div ng-if="area.hasOwnProperty('tid') && area.tid != 1312" id="link-to-deals">
+    <a href ui-sref="tabs.directory({area: (area.hasOwnProperty('tid') ? area.tid : ''), deals: 1 })" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="link-deals">See our local DEALS page.</a>
+  </div>
+   <div class="title-bar">
+     <a href ui-sref="tabs.events({ 'area[]': (area.hasOwnProperty('tid') ? area.tid : '')})" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="link-calendarwidget-title" id="link-calendarwidget-title">
+       <img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/icon-calendar.png'}}">
+       <div class="title">
+         <span>This Week In</span><br>{{area.name ? area.name : "All Regions"}}
+       </div>
+     </a>
+   </div>
+   <div class="calendar" ng-if="(item && item.hasOwnProperty('nid')) || $state.current.name == 'tabs.home'" ng-init="isEventsCollapsed = false">
+     <div class="date-tabs">
+       <span ng-repeat="date in currentEventList"  class="date-tab" ng-init="date.active = ($index == 0)" ng-class="{active : date.active}" ng-click="date.active = true; $parent.isEventsCollapsed = false" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="{{'link-calendarwidget-date-' + $index}}" ng-attr-id="{{'link-calendarwidget-date-' + $index}}">
+         <div class="day">{{date.day.charAt(0)}}</div><div class="date circle">{{date.date}}</div>
+       </span>
+     </div>
+     <uib-tabset ng-show="!isEventsCollapsed" justified="true" class="date-tabs-content">
+       <uib-tab ng-repeat="date in currentEventList"  active="date.active" disable="date.disabled" ng-init="parentIndex = $index">
+         <div class="detail" ng-class="{sponsored : event.field_data_field_sponsored_field_sponsored_value == '1'}" ng-repeat="event in date.events">
+           <div ng-if="event.field_data_field_sponsored_field_sponsored_value == '1'" class="featured">Featured</div>
+           <a href ui-sref="tabs.node({ path: event._field_data.nid.entity.node_url, nid: event.nid, tid: undefined, page: undefined })" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="{{'link-sidebarevent-' + event.node_title.replace(title_replace_pattern, '_').toLowerCase()}}">{{event.node_title}}</a><br>
+           {{event.location_name}} - {{ (event.field_field_event_date[0].raw.value.substr(0, 10) + 'T' + event.field_field_event_date[0].raw.value.substr(10 + 1) | date: 'h:mm a') != '12:00 AM' ? (event.field_field_event_date[0].raw.value.substr(0, 10) + 'T' + event.field_field_event_date[0].raw.value.substr(10 + 1) | date: 'h:mm a') : 'various times' }}
+           <span ng-if="event.field_data_field_pick_field_pick_value == '1'" class="tag pick">Pick</span>
+         </div>
+       </uib-tab>
+     </uib-tabset>
+   </div>
+   <div class="cal-links">
+     <div class="all-events"><a href ui-sref="tabs.events({ 'area[]': (area.hasOwnProperty('tid') ? area.tid : '')})" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="link-seeallevents" id="link-seeallevents">SEE ALL EVENTS <span class="chevron right"></span></a></div>
+     <div class="submit-events"><a href="/node/add/event" target="_self" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="link-submitevent" id="link-submitevent">SUBMIT AN EVENT +</a></div>
+   </div>
+</div>
+
+<div>
+  <div ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/email_subscribe.html'" ng-init="subscribepos = 'bottombar'"></div>
+</div>
+
+<div ng-if="(item && item.hasOwnProperty('nid') && (!item.hasOwnProperty('type') || (item.hasOwnProperty('type') && item.type != 'areaguide' && item.type != 'cityguide'))) && regionTitle && regionList && regionList.length > 0" class="term-list-wrapper regions">
+   <div class="title-bar" ng-style="{textAlign: 'left'}" ng-click="regionListCollapse = !regionListCollapse">
+     <div class="title" ng-bind-html="regionTitle | sanitize"></div>
+     <img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-chevron-thin-small-' + (regionListCollapse ? 'down' : 'up') + '.svg'}}" aria-hidden="true" />
+   </div>
+   <div class="term-list" uib-collapse="regionListCollapse" ng-init="regionListCollapse = true">
+      <ul>
+        <li ng-repeat="term in regionList | orderBy: 'name'">
+          <!--a ng-if="term.vid == 8" ui-sref="tabs.node({path: '/directory/' + termKey + '?type=' + term.tid, type: term.name})">{{term.name}}</a
+              -->
+          <a ng-if="term.vid == 8" href ui-sref="tabs.directoryType({ roottype: termKey.replace(' ', '-'), area: area.hasOwnProperty('tid') ? area.tid : '', type: term.tid })" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="bottombarClick" analytics-label="{{'link-neighborhoodlist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-neighborhoodlist-' + $index}}">{{term.name}}</a>
+          <a ng-if="term.vid != 8" href ui-sref="tabs.node({ path: term.node_url, nid: undefined, tid: term.tid, page: undefined })" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="bottombarClick" analytics-label="{{'link-neighborhoodlist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-neighborhoodlist-' + $index}}">{{term.name}}</a>
+      </ul>
+   </div>
+</div>
+
+<div ng-if="((item && item.hasOwnProperty('nid') && (adParams.page == 'article' || adParams.page == 'event' || adParams.page == 'guide' || adParams.page == 'areaguide' || adParams.page == 'cityguide' || adParams.page == 'category')) || (item && item.hasOwnProperty('tid') && termTitle != 'More Activities')) && categoryList" class="bottom-categories term-list-wrapper">
+   <div class="title-bar" ng-style="{textAlign: 'left'}" ng-click="categoryListCollapse = !categoryListCollapse">
+     <div class="title">Activity <span>Guides</span></div>
+     <img ng-if="adParams.page == 'listing' || width < 660" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-chevron-thin-small-' + (categoryListCollapse ? 'down' : 'up') + '.svg'}}" aria-hidden="true" />
+   </div>
+   <div class="term-list" uib-collapse="categoryListCollapse" ng-init="categoryListCollapse = (adParams.page == 'listing') || (width && width < 660)">
+      <ul>
+        <li ng-repeat="term in categoryList | orderBy: 'name'">
+          <!--a ng-if="term.vid == 8" ui-sref="tabs.node({path: '/directory/' + termKey + '?type=' + term.tid, type: term.name})">{{term.name}}</a
+              -->
+          <a ng-if="term.vid == 8" href ui-sref="tabs.directory({ area: area.hasOwnProperty('tid') ? '&area=' + area.tid : '', type: term.tid})" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="{{'link-bottom-categorylist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-bottom-categorylist-' + $index}}">{{term.name}}</a>
+          <a ng-if="term.vid != 8" href ui-sref="tabs.node({ path: term.node_url, tid: term.tid, nid: undefined, page: undefined})" analytics-on="click" analytics-category="sidebar-{{item && item.hasOwnProperty('tid') ? 'term' : 'node'}}" analytics-event="bottombarClick" analytics-label="{{'link-bottom-categorylist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-bottom-categorylist-' + $index}}">{{term.name}}</a>
+      </ul>
+   </div>
+</div>
+

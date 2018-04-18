@@ -1,0 +1,74 @@
+      <div id="menu-button">
+        <a href="#" class="menu-toggle" ng-click="toggleMobileMenu(!mobileIsCollapsed)"><i class="fa fa-bars"></i></a>
+      </div> 
+      <div id="menu-mobile" uib-collapse="toggleMobileMenu()" ng-mouseleave="toggleMobileMenu(true)">
+        <div id="searchbox">
+          <div id="static-user-links">
+            <a href="/user" target="_top" class="profile" alt="My Profile" title="My Profile"><i class="fa fa-user" aria-hidden="true"></i></a>
+            <a href="/user/login" target="_top" class="login" alt="Sign in" title="Sign in"><i class="fa fa-user" aria-hidden="true"></i></a>
+            <a href="/user/logout" target="_top" class="logout" alt="Sign out" title="Sign out"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+            <input type="text" ng-model="searchSite" placeholder="Search MommyPoppins" ng-keypress="sendSearch($event, searchSite); keyEvent && keyEvent.which === 13 ? toggleMobileMenu(true) : null;" analytics-on="click" analytics-event="searchClick" analytics-category="mobileMenu" analytics-label="Search">
+          </div>
+        </div>
+
+
+        <div id="menu-links-wrapper">
+          <div class="nav-first btn-group">
+            <h1><a href type="button" class="nav-top" ng-click="toggleMobileMenu(true)" ui-sref="tabs.home({ 'tid': area.tid})" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="mobile-menu-home" id="mobile-menu-home">
+              HOME {{ ' - ' + area.name }}
+            </a></h1>
+          </div>
+          <div class="nav-first btn-group">
+            <h1><a href type="button" class="nav-top" ng-click="toggleMobileMenu(true)" ui-sref="tabs.events({ 'area[]': area.tid})" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="mobile-menu-first-calendar" id="mobile-menu-calendar">
+              Events Calendar
+            </a></h1>
+          </div>
+          <div class="nav-first btn-group">
+            <h1><a href type="button" class="nav-top" ng-click="toggleMobileMenu(true)" ui-sref="tabs.directory({ area: area.hasOwnProperty('tid') ? area.tid : ''})" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="mobile-menu-first-directory" id="mobile-menu-directory">
+              Directory
+            </a></h1>
+          </div>
+          <div class="nav-first btn-group" uib-dropdown is-open="status.isopen" ng-repeat="item in menuItems track by $index" ng-hide="item.link.hidden == '1'" >
+            <a href ng-if="!isArray(item.below)" type="button" class="nav-top" ng-click="item.showsub = clickMain(item)" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="{{'mobile-menu-first-' + item.link.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'mobile-menu-first-' + $index}}">
+              {{ item.link.title }} <span class="chevron right" ng-show="checkBelow(item)"></span>
+            </a>
+            <a href ng-if="isArray(item.below)" ng-click="toggleMobileMenu(true)" ui-sref="tabs.node({ path: item.link.relative_path, nid: item.link.nid, tid: item.link.tid, page: undefined })" type="button" class="nav-top" ng-click="item.showsub = clickMain(item)" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="{{'mobile-menu-first-' + item.link.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'mobile-menu-first-' + $index}}">
+              {{ item.link.title }} </span>
+            </a>
+            <div class="submenu" ng-show="item.showsub">
+              <ul>
+                <li ng-repeat="subitem in item.below">
+                  <h2><a href type="button" class="nav-second" ng-click="toggleMobileMenu(true)" ui-sref="tabs.node({ path: subitem.link.relative_path, nid: subitem.link.nid, tid: subitem.link.tid, page: undefined })" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="{{'mobile-menu-second-' + subitem.link.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'mobile-menu-second-' + $index}}">
+                    {{subitem.link.title}} 
+                  </a></h2>
+                </li>
+              </ul>
+           </div><!-- end submenu -->
+          </div>
+          <div class="nav-first btn-group">
+            <h1><a class="nav-top" href="/content/contact?view=html" target="_self" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="mobile-menu-first-contact" id="mobile-menu-contact">
+              Contact
+            </a></h1>
+          </div>
+        </div><!-- end menu-link-wrapper -->
+
+
+        <div id="social-icons">
+             <!--span class="glyphicon glyphicon-search" aria-hidden="true"></span> | <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> | Flc | FB | TW
+             -->
+             <!--a ui-sref="tabs.search" target="{{inNG ? '' : '_self'}}"><img src ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/icon-search.png'}}"></a
+             -->
+             <!--a ui-sref="contact-us" target="{{inNG ? '' : '_self'}}" class="contact">CONTACT <div class="chevron"> </div></a
+             -->
+             <a ng-href="{{ area.hasOwnProperty('field_facebook_link') && area.field_facebook_link.hasOwnProperty('und') ? area.field_facebook_link.und[0].value : 'http://www.facebook.com/pages/Mommy-Poppins/89502713647' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="mobileMenu" analytics-label="mobile-social-facebook" id="mobile-social-facebook"><img src ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/facebook-white.svg'}}"></a>
+             <a ng-href="{{ area.hasOwnProperty('field_instagram_link') && area.field_instagram_link.hasOwnProperty('und') ? area.field_instagram_link.und[0].value : 'https://www.instagram.com/people/mommypoppins/' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="mobileMenu" analytics-label="mobile-social-instagram" id="mobile-social-instagram"><img src ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/instgram-white.svg'}}"></a>
+             <a ng-href="{{ area.hasOwnProperty('field_twitter_link') && area.field_twitter_link.hasOwnProperty('und') ? area.field_twitter_link.und[0].value : 'http://twitter.com/mommypoppins' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="mobileMenu" analytics-label="mobile-social-twitter" id="mobile-social-twitter"><img src ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/twitter---white.svg'}}"></a>
+             <a ng-href="{{ area.hasOwnProperty('field_pinterest_link') && area.field_pinterest_link.hasOwnProperty('und') ? area.field_pinterest_link.und[0].value : 'http://pinterest.com/mommypoppins' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="mobileMenu" analytics-label="mobile-social-pinterest" id="mobile-social-pinterest"><img src ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/pinterest-icons-white.svg'}}"></a>
+             <!--a href="https://www.flickr.com/people/mommypoppins/" target="_self"><img src="/sites/all/themes/mp_world/images/icon-flickr.png"></a
+             -->
+        </div>
+        <div>
+          <div ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/email_subscribe.html'" ng-init="subscribepos = 'mobilemenu'"></div>
+        </div>
+      </div><!-- end menu-mobile -->
+

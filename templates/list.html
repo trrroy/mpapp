@@ -1,0 +1,64 @@
+<div class="list-container-wrapper"> 
+      <div ng-hide="itemList != null">
+        Searching...
+      </div>
+  <div ng-if="item" class="detail-container" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/list-detail.html'"></div>
+  <div class="list-container" id="theList">
+    <div>
+      <div ng-repeat="result in itemList track by $index" ng-show="itemList.length > 0">
+        <div ng-if="$index > 0 && ($index)%6 == 0" class="ad-bar">
+          <div ng-attr-id="{{'wrapper-div-gpt-ad-results-' + $index + '-0' + ''}}" serve-ad ad-unit="{{'billboard-inline' + ($index > 24 ? '-2' : '')}}" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-results-' + $index + ''}}" class="ad"></div>
+        </div>
+        <div ng-if="listType == 'eventsListing' && ($index == 0 || result.raw_sql_order != itemList[$index-1].raw_sql_order)" class="events-date-header">{{ result.raw_sql_order | asDate | amUtcOffset:'+0500' | amDateFormat : 'ddd, MMM D' }}</div>
+        <div class="list-item">
+          <div ng-hide="result.collapsed === false" ng-if="result.ngContent.thumbnail.uri && result.ngContent.thumbnail.uri != '' && (!result.hasOwnProperty('field_data_field_listing_level_field_listing_level_value') || (result.hasOwnProperty('field_data_field_listing_level_field_listing_level_value') && dir_special.indexOf(result.field_data_field_listing_level_field_listing_level_value) != -1))" class="content-image">
+            <img ng-src="{{ result.ngContent.thumbnail.uri | s3url : 'image140x116'}}" class="img-responsive item-image">
+            <div class="tag featured" ng-if="result.hasOwnProperty('field_data_field_listing_level_field_listing_level_value') && result.field_data_field_listing_level_field_listing_level_value == 'PTNM' || result.field_data_field_listing_level_field_listing_level_value == 'Premium'">FEATURED
+            </div>
+          </div><!-- end list-item -->
+          <div class="content-details">
+            <h2 ng-hide="result.collapsed === false"><a href ng-click="result.collapsed = false; result.detail = popDetail(result.nid)" ng-init="result.collapsed = true">{{result.ngContent.title}}</a></h2>
+            <!--uib-rating ng-hide="result.collapsed === false" ng-if="result.hasOwnProperty('votingapi_vote_node_percent_vote_value')" ng-model="result.votingapi_vote_node_percent_vote_value" readonly="true">{{ parseInt(result.votingapi_vote_node_percent_vote_value)/20 }}/5</uib-rating
+            -->
+            <div ng-hide="result.collapsed === false" ng-repeat="detail in result.ngContent.details">
+              <label ng-if="detail.label != ''">{{ detail.label }}</label>
+              <span ng-bind-html="detail.content | sanitize"></span>
+            </div>
+            <!--div ng-hide="result.collapsed === false" ng-if="result.ngContent.hasOwnProperty('delta')" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/calendar-add.html'" ng-init="eventData = result; trackLabel='eventCollapsed'"></div
+            -->
+            <div class="item-detail" uib-collapse="result.collapsed !== false">
+              <a ng-show="result.detail" href ng-click="result.collapsed = true; result.detail = null" class="detail-close"><span class="x-button">X</span> close</a>
+              <div ng-if="result.collapsed === false" class="detail-container" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/result-detail.html'"></div>
+              <a ng-show="result.detail" href ng-click="result.collapsed = true; result.detail = null" class="detail-close"><span class="x-button">X</span> close</a>
+            </div>
+            <div ng-if="result.node[result.nid].hasOwnProperty('deal') && result.node[result.nid].deal.hasOwnProperty('title')" ng-hide="result.collapsed === false" class="deal">
+              <span class="deal-icon">Deal</span>
+              <div ng-click="result.collapsed = false; result.detail = popDetail(result.nid)" class="title ellipsis link" ng-bind-html="result.node[result.nid].deal.title | sanitize"> </div>
+            </div>
+          </div><!-- end content-details -->
+        </div>
+      </div>
+      <!-- // This could be used as a repeatable ad unit in the results 
+      <div ng-class="{'col-xs-8':mode==1||mode==2, 'col-xs-6':mode==3}" ng-if="($index+2)%3 == 0">
+        <div class="ads" ng-if="$index+2 == 3">
+          <div data-ng-dfp-ad="{{'div-gpt-ad-1417447204994-' + ($index+2)}}"></div>
+        </div>
+      </div>
+      <div class="clearfix col-xs-12" ng-if="($index+2)%3 == 0">
+        <hr>
+      </div>
+      <div ng-repeat-end="" ng-class="{'clearfix':mode==1}"></div>
+      // end repeatable ad unit -->
+      <div ng-hide="itemList == null || itemList.length > 0 || itemList === false">
+        &nbsp;&nbsp;No results.
+        Refine your results. Enter a search term or choose other filters.
+      </div>
+      <uib-pagination ng-hide="!totalListings || totalListings <= pageMaxRows" total-items="totalListings" ng-model="bigCurrentPage" items-per-page="pageMaxRows" max-size="6" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="clickPager(bigCurrentPage)"></uib-pagination>
+      
+    </div><!--/row-->
+  </div><!--/container-->
+  
+  
+</div>
+</div><!--/container-->
+

@@ -1,0 +1,372 @@
+<div class="page-content" ng-class="{'home' : $state.current.name == 'tabs.home', 'node': item.nid, 'term' : item.tid, 'mobile': width && width < 1280, 'desktop': width >= 1280, 'not-published' : item.hasOwnProperty('status') && item.status == '0', 'roundup' : item.type == 'roundup', 'roundup' : item.type == 'cityguide'}">
+<div ng-if="message && message != ''" class="message-user content-wrapper">
+  <div ng-class="error">
+    <div ng-bind-html="message | sanitize"></div>
+  </div>
+</div>
+<div ng-if="messages && messages != ''" class="message-user content-wrapper">
+  <div ng-repeat="(key,value) in messages" ng-class="{'{{key}}' : key}" class="messages">
+    <div ng-repeat="message in value" ng-bind-html="message | sanitize"></div>
+  </div>
+</div>
+<div ng-if="item.type == 'directory' || item.type == 'event'" class="search-return">
+    <a ng-if="item.type == 'directory'" ng-href="{{prev && prev != '' && prev.indexOf('/directory?') === 0 ? prev : '/directory' + (area && area.tid ? '?area=' + area.tid : '')}}">&lt;&nbsp;Directory Listings</a>
+    <a ng-if="item.type == 'event'" ng-href="{{prev && prev != '' && prev.indexOf('/events?') === 0 ? prev : '/events' + (area && area.tid ? '?area[]=' + area.tid : '')}}">&lt;&nbsp;Event Calendar</a>
+</div>
+<div ng-if="item.tid && item.name && !related" class="content-wrapper">
+  <h1 id="term-title" ng-bind-html="item.name | sanitize"></h1>
+</div>
+<div ng-if="spotlight && item.nid && (item.type == 'roundup' || item.type == 'cityguide')" class="related-wrapper spotlight">
+  <div id="spotlight-widget" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/spotlight.html'"></div>
+</div><!--end related-wrapper-->
+<div ng-if="related && item.nid && item.type != 'guide' && item.type != 'areaguide' && item.type != 'roundup' && item.type != 'cityguide'" class="related-wrapper spotlight">
+  <div id="spotlight-widget" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/related_content.html'"></div>
+</div><!--end related-wrapper-->
+<div ng-if="item.nid && item.type != 'guide' && item.type != 'areaguide' && item.type != 'roundup' && item.type != 'cityguide'" class="content-head-wrapper content-wrapper">
+  <div ng-if="item.nid != 78080 && item.nid != 155724" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/sidebar.html'" ng-init="widget = 'node'" ng-class="width < 660 ? 'middlebar-widget' : 'sidebar-widget'"></div>
+  <div class="node-fields">
+    <div ng-if="item.vid" class="controls-wrapper" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/controls.html'"></div>
+    <div id="tags" class="tags" ng-if="item.type == 'blog' || item.type == 'gallery' || item.type == 'directory'" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/tags.html'"></div>
+    <div ng-if="item.type != 'event' && item.hasOwnProperty('field_pick') && item.field_pick.hasOwnProperty('und') && item.field_pick.und[0].value == '1'" class="tag sponsored">SPONSORED</div>
+    <iframe
+      class="lead-image"
+      ng-if="item.hasOwnProperty('field_video_clip') && item.field_video_clip.hasOwnProperty('und') && item.field_video_clip.und[0].value != ''"
+      ng-style="{ 'width' : (width && width < 660 ? width : (width > 1280 ? 960 : width-340)) + 'px', 'height' : ((width && width < 660 ? width : ((width > 1280 ? 960 : width-340)))/16)*9 + 'px' }"
+      ng-src="{{item.field_video_clip.und[0].value.replace('youtu.be', 'youtube.com/embed')}}" frameborder="0" allow="encrypted-media" allowfullscreen
+      ></iframe>
+    <div
+      ng-if="!(item.hasOwnProperty('field_video_clip') && item.field_video_clip.hasOwnProperty('und') && item.field_video_clip.und[0].value != '')"
+      >
+      <img class="lead-image"
+        ng-style="{ 'width' : (width && width < 660 ? width : width-340) + 'px' }"
+        ng-if="(item.type != 'directory' && item.hasOwnProperty('field_image') && item.field_image.hasOwnProperty('und') && !item.hasOwnProperty('field_images')) || (item.type == 'directory' && dir_special.indexOf(item.field_listing_level.und[0].value) != -1 && item.hasOwnProperty('field_image') && item.field_image.hasOwnProperty('und') && !item.hasOwnProperty('field_images'))"
+        ng-src="{{item.field_image.und[0].uri | s3url: width >= 920 ? 'image960x650' : width >= 400 ? 'image620x420' : 'image300x250'}}"
+        title="{{item.title}}"
+        alt="{{item.field_image.und[0].hasOwnProperty('alt') ? item.field_image.und[0].alt : ''}}">
+      <div
+        ng-if="item.field_image.und[0].hasOwnProperty('alt') && item.field_image.und[0]['alt'] != ''"
+        class="caption"
+        ng-bind-html="item.field_image.und[0].hasOwnProperty('alt') ? item.field_image.und[0].alt : '' | sanitize"
+        style="margin-bottom: 1em;"
+        ></div>
+
+      <div ng-if="item.hasOwnProperty('field_images') && item.field_images.hasOwnProperty('und') && (item.type != 'directory' || (item.type == 'directory' && dir_special.indexOf(item.field_listing_level.und[0].value) != -1))" gallery class="gallery node">
+        <!-- The images -->
+        <div gallery-window class="gallery-window" ng-style="{ 'width' : (width < 660 ? width : (width > 940 ? 620: width-320)) + 'px' }">
+          <div gallery-item-list class="gallery-item-list" ng-init="isWrapping = true" ng-class="{wrapping: isWrapping}">
+            <div gallery-item ng-repeat="image in item.field_images.und" active="image.active" class="gallery-item">
+              <img ng-src="{{image.uri | s3url: width >= 400 ? 'image620x420' : 'image300x250'}}" title="{{image.title}}" alt="{{image.hasOwnProperty('alt') ? image.alt : ''}}">
+            </div>
+          </div>
+          <div class="gallery-nav" class="gallery-nav" ng-swipe-left="nextItem()" ng-swipe-right="previousItem()"><!-- Nav actions -->
+            <a ng-click="previousItem()" class="previous"><span class="text">Previous</span></a>
+            <a ng-click="nextItem()" class="next"><span class="text">Next</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+      <h1 id="node-title">{{item.title}}</h1>
+      <div ng-if="item.hasOwnProperty('created') && (item.type == 'blog' || item.type == 'gallery')" class="byline">{{ (item.created * 1000) | date:'shortDate' }} - <a href="/user/{{item.uid}}" target="_top">By {{item.name}}</a></div>
+      <!--div class="addthis_toolbox" sn-addthis-toolbox
+           data-share="{
+                title: item.title,
+                url: 'https://mommypoppins.com' + item.node_url,
+                description: ''
+            }">
+          <a href class="addthis_button" title="AddThis"></a>
+      </div-->
+
+      <!--div ng-if="item.hasOwnProperty('field_title_description') && item.field_title_description.hasOwnProperty('und')" ng-bind-html="item.field_title_description.und[0].value | sanitize"></div -->
+      <!--div ng-if="FALSE && item.type == 'directory'"><uib-rating ng-model="item.field_vote[0]['average']['#rating']" readonly="true">{{ item.field_vote[0]['average']['#rating'] }}/5</uib-rating></div-->
+      <div ng-if="(item.subscription_type || item.type == 'event') && item.deal && item.deal.hasOwnProperty('title')" class="deal" ng-click="item.deal.hasOwnProperty('url') && item.deal.url != NULL ? dealLink(item.deal.url) : null" ng-class="{'deal-link' : item.deal.hasOwnProperty('url')}" >
+        <span class="deal-icon">Deal</span>
+        <div class="title">{{item.deal.title}}</div>
+	    <div class="body" ng-bind-link-out="item.deal.body | sanitize"></div>
+      <div ng-if="item.deal.hasOwnProperty('url') && item.deal.url != NULL" class="read-more"><a ng-href="{{item.deal.url}}" target="_blank" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="dealLink-moreinfo">More info</a></div>
+      </div>
+      <div class="event-info">
+        <div ng-if="item.hasOwnProperty('event_dates') && !item.event_dates.length"><strong ng-bind-html="item.event_date | sanitize"></strong></div>
+        <div ng-if="item.hasOwnProperty('event_dates') && item.event_dates.length"
+          ><strong ng-bind-html="item.event_date + (item.field_event_date.und.length > 1 ? ' - ' + item.event_date_last : '') | sanitize"></strong>
+          <span
+            ng-if="item.hasOwnProperty('event_repeats') && item.event_repeats != ''"
+            > 
+            <a
+              href
+              ng-hide="!isRepeatsCollapsed"
+              ng-click="isRepeatsCollapsed = isRepeatsCollapsed ? false : true" class="link"
+              analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="open" analytics-label="see all dates"
+              >- see all dates
+            </a>
+            <div uib-collapse="isRepeatsCollapsed" ng-init="isRepeatsCollapsed = true" class="">
+              <span ng-if="item.hasOwnProperty('event_repeats') && item.event_repeats != ''" ng-bind-html="item.event_repeats | sanitize"></span>
+            </div>
+          </span>
+        </div>
+        <div ng-if="item.hasOwnProperty('event_time') && item.event_time != ''"><strong ng-bind-html="item.event_time | sanitize"></strong></div>
+        <div ng-if="item.hasOwnProperty('field_age') && item.field_age.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Age:</label> <span ng-bind-html="item.field_age.und[0].value | sanitize"></span></div> 
+        <!--div ng-if="item.hasOwnProperty('field_contact') && item.field_contact.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Contact:</label> <span ng-bind-html="item.field_contact.und[0].value | sanitize"></span></div
+        -->
+        <div ng-if="item.hasOwnProperty('field_contact_phone') && item.field_contact_phone.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Contact Phone:</label> <span ng-bind-html="item.field_contact_phone.und[0].value | sanitize"></span></div> 
+        <div ng-if="item.hasOwnProperty('field_contact_email') && item.field_contact_email.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Contact Email:</label> <span ng-bind-html="item.field_contact_email.und[0].value | sanitize"></span></div> 
+        <div ng-if="item.hasOwnProperty('field_application_process') && item.field_application_process.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Application Process:</label> <span ng-bind-html="item.field_application_process.und[0].value | sanitize"></span></div> 
+        <div ng-if="item.hasOwnProperty('field_philosophy') && item.field_philosophy.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Philosophy:</label> <span ng-bind-html="item.field_philosophy.und[0].value | sanitize"></span></div> 
+        <div ng-if="item.hasOwnProperty('field_agecutoff') && item.field_agecutoff.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Age Cut-off:</label> <span ng-bind-html="item.field_agecutoff.und[0].value | sanitize"></span></div> 
+        <div ng-if="item.hasOwnProperty('field_area') && item.field_area.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Area:</label> <span ng-bind-html="item.field_area.und[0].value | sanitize"></span></div> 
+        <!--div ng-if="item.hasOwnProperty('field_pick') && item.field_pick.hasOwnProperty('und') && item.field_pick.und[0].value == 1">Editor's Pick!</div
+            -->
+        <div ng-if="item.hasOwnProperty('field_tuition') && item.field_tuition.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Tuition:</label> <span ng-bind-html="item.field_tuition.und[0].value | sanitize"></span></div> 
+        <div ng-if="item.hasOwnProperty('field_price') && item.field_price.hasOwnProperty('und')" ng-init="inner.extra = true"><label>Price:</label> <span ng-bind-html="item.field_price.und[0].value | sanitize"></span></div>
+        <div
+          ng-if="item.hasOwnProperty('field_event_date') && item.field_event_date.hasOwnProperty('und')"
+          ng-show="event_delta >= 0"
+          ng-init="firstCalendarDelta()"
+          >
+          <div ng-click="isCalAddCollapsed=false" class="link add-to-cal-btn" ng-hide="isCalAddCollapsed === false"
+            analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="open" analytics-label="add-to-calendar"
+            >+ add to your calendar
+          </div>
+          <div uib-collapse="isCalAddCollapsed" ng-init="isCalAddCollapsed = true" class="add-to-cal">
+            <div>Choose a date and calendar type to add this event:</div>
+            <select
+              ng-model="event_delta"
+              style="padding: 2px 3px 3px 3px;"
+              >
+              <option
+                ng-repeat="ev in item.field_event_date['und']"
+                ng-if="convertDT(ev.value2) > nowMinusDay"
+                value="{{$index}}"
+                >{{ (convertDT(ev.value) | date:'shortTime' | lowercase) == '12:00 am' ? (convertDT(ev.value) | date:'shortDate' | lowercase) : (convertDT(ev.value) | date:'short' | lowercase) }}
+                {{ (convertDT(ev.value) | date:'shortTime' | lowercase) != (convertDT(ev.value2) | date:'shortTime' | lowercase) ? ' - ' +(convertDT(ev.value2) | date:'shortTime' | lowercase) : '' }}
+              </option>
+            </select>
+            <select
+              ng-model="calendar_type"
+              ng-init="calendar_type = 'google'"
+              style="padding: 2px 3px 3px 3px;"
+              >
+              <option value="google">Google</option>
+              <option value="yahoo">Yahoo</option>
+              <option value="ical">iCal</option>
+            </select>
+            <button
+              ng-click="setCal(event_delta, calendar_type)"
+              analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="add" analytics-label="add-to-calendar"
+              >add
+            </button>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+
+
+      <div ng-if="item.hasOwnProperty('body_parsed') && (item.type != 'deal' && (item.type != 'directory' || (item.type == 'directory' && dir_special.indexOf(item.field_listing_level.und[0].value) != -1)))" class="body"  ng-bind-html="item.body_parsed | sanitize"
+        ></div>
+      <div ng-if="item.hasOwnProperty('body_parsed') && item.type == 'deal'" class="body"  ng-bind-html="item.body_parsed | sanitize"
+        ng-click="item.type == 'deal' && item.field_deal_link && item.field_deal_link.hasOwnProperty('und') ? dealLink(item.field_deal_link.und[0].url) : null" ng-class="{'link' : item.type == 'deal' && item.field_deal_link && item.field_deal_link.hasOwnProperty('und')}"
+        ></div>
+      <div ng-if="item.type == 'deal' && item.field_deal_link && item.field_deal_link.hasOwnProperty('und')"  ng-click="item.type == 'deal' && item.field_deal_link && item.field_deal_link.hasOwnProperty('und') ? dealLink(item.field_deal_link.und[0].url) : null" class="deal link"
+        >Click for Deal</div>
+      <!-- div ng-if="item.hasOwnProperty('field_sub_body') && item.field_sub_body.hasOwnProperty('und')" ng-bind-html="item.field_sub_body.und[0].value | sanitize"></div 
+           -->
+      <div ng-if="item.hasOwnProperty('term_guide') && item.term_guide.hasOwnProperty('nid')" id="term-guide" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/term_guide.html'"></div>
+        <div class="node-links">
+          <a ng-if="item.hasOwnProperty('field_website') && item.field_website.hasOwnProperty('und')" href ng-href="{{item.field_website.und[0].url.match('http') ? item.field_website.und[0].url : 'http://' + item.field_website.und[0].url}}" target="_blank" class="bigbutton-link" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="{{'website-node-' + item.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'node-website-' + item.nid}}">WEBSITE</a>
+          <a ng-if="item.hasOwnProperty('field_plemail') && item.field_plemail.hasOwnProperty('und')" href ng-href="mailto:{{item.field_plemail.und[0].email | sanitize}}?subject=Inquiry from MommyPoppins.com%20" target="_blank" class="bigbutton-link" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="{{'email-node-' + item.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'node-email-' + item.nid}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+
+
+
+          <!-- should location phone's only show for directory or events too? 
+         -->
+          <span ng-if="(width && width < 1024) && item.type == 'directory' && item.hasOwnProperty('field_location') && item.field_location.und[0]">
+            <span ng-if="$index == 0 && location.hasOwnProperty('latitude') && location.latitude != '' && location.latitude != 0"  ng-repeat="location in item.field_location.und track by $index" class="item-location">
+              <span ng-if="location.phone"><a href ng-href="tel:{{location.phone}}" class="bigbutton-link" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="{{'contact_phone_button-node-' + item.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'node-phone_button-' + item.nid}}" title="{{location.phone}}"><i class="fa fa-phone" aria-hidden="true"></i></a></span>
+            </span>
+          </span><!--end locations-phone-wrapper-->
+
+        </div>
+      <div ng-if="width < 660 && $state.current.name != 'tabs.home' && item.type != 'directory' && item.type != 'event' && item.type != 'areaguide' && item.type != 'guide' && item.type != 'roundup' && item.type != 'cityguide'">
+        <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-2'}}" serve-ad ad-unit="mediumrectanglebtf" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-2'}}" class="ad"></div>
+      </div>
+    </div><!-- end node-fields -->
+</div><!-- end content-head-wrapper -->
+
+<div ng-if="item.nid && (item.type == 'roundup' || item.type == 'cityguide')" class="content-head-wrapper content-wrapper roundup">
+  <div ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/sidebar.html'" ng-init="widget = 'node'" ng-class="width < 660 ? 'middlebar-widget' : 'sidebar-widget'"></div>
+  <div class="node-fields">
+    <div ng-if="item.vid" class="controls-wrapper" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/controls.html'"></div>
+    <div id="tags" class="tags" ng-if="item.type == 'blog' || item.type == 'gallery' || item.type == 'directory' || item.type == 'roundup' || item.type == 'cityguide'" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/tags.html'"></div>
+    <div ng-if="item.type != 'event' && item.hasOwnProperty('field_pick') && item.field_pick.hasOwnProperty('und') && item.field_pick.und[0].value == '1'" class="tag sponsored">SPONSORED</div>
+    <iframe
+      class="lead-image"
+      ng-if="item.hasOwnProperty('field_video_clip') && item.field_video_clip.hasOwnProperty('und') && item.field_video_clip.und[0].value != ''"
+      ng-style="{ 'width' : (width && width < 660 ? width : (width > 1280 ? 960 : width-340)) + 'px', 'height' : ((width && width < 660 ? width : ((width > 1280 ? 960 : width-340)))/16)*9 + 'px' }"
+      ng-src="{{item.field_video_clip.und[0].value.replace('youtu.be', 'youtube.com/embed')}}" frameborder="0" allow="encrypted-media" allowfullscreen
+      ></iframe>
+    <div
+      ng-if="!(item.hasOwnProperty('field_video_clip') && item.field_video_clip.hasOwnProperty('und') && item.field_video_clip.und[0].value != '')"
+      >
+      <img class="lead-image" ng-style="{ 'width' : (width < 660 ? width : width-340) + 'px' }" ng-if="item.hasOwnProperty('field_image') && item.field_image.hasOwnProperty('und') && !item.hasOwnProperty('field_images')" ng-src="{{item.field_image.und[0].uri | s3url: width >= 920 ? 'image960x650' : width >= 400 ? 'image620x420' : 'image300x250'}}" title="{{item.title}}" alt="{{item.field_image.und[0].hasOwnProperty('alt') ? item.field_image.und[0].alt : ''}}">
+      <div
+        ng-if="item.field_image.und[0].hasOwnProperty('alt') && item.field_image.und[0]['alt'] != ''"
+        class="caption"
+        ng-bind-html="item.field_image.und[0].hasOwnProperty('alt') ? item.field_image.und[0].alt : '' | sanitize"
+        style="margin-bottom: 1em;"
+        ></div>
+    </div>
+      <h1 id="node-title">{{item.title}}</h1>
+      <div ng-if="item.hasOwnProperty('created')" class="byline">{{ (item.created * 1000) | date:'shortDate' }} - <a href="/user/{{item.uid}}" target="_top">By {{item.name}}</a></div>
+      <div ng-if="item.hasOwnProperty('body_parsed') && (item.type != 'deal' && (item.type != 'directory' || (item.type == 'directory' && dir_special.indexOf(item.field_listing_level.und[0].value) != -1)))" class="body"  ng-bind-html="item.body_parsed | sanitize"
+        ></div>
+    </div><!-- end node-fields - roundup -->
+</div><!-- end content-head-wrapper - roundup -->
+
+<div ng-if="related && (item.tid || item.type == 'guide' || item.type== 'areaguide')" class="related-wrapper">
+    <div id="related" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/related_content.html'"></div>
+</div><!--end related-wrapper-->
+<div ng-if="related && (item.type == 'roundup' || item.type == 'cityguide')" class="node-fields content-wrapper type-roundup">
+    <div id="related" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/related_content_roundup.html'"></div>
+</div><!--end related-wrapper-->
+
+
+
+<div class="feeds-wrapper" ng-if="(!related && item.tid && $state.current.name != 'tabs.home') || ($state.current.name != 'tabs.home' && latestList && item.type != 'roundup' && item.type != 'cityguide')">
+  <div class="content-wrapper">
+  <div ng-if="!related && item.tid && $state.current.name != 'tabs.home'" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/sidebar.html'" ng-init="widget = 'term'" ng-class="width < 660 ? 'middlebar-widget' : 'sidebar-widget'"></div>
+    <div ng-if="$state.current.name != 'tabs.home' && latestList" id="term-nodes" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/latest.html'" class="section latest"></div>
+    <!--div ng-if="item.nid && item.type == 'areaguide'" id="areaguides-feed" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/areaguides-feed.html'"></div-->
+    <!--div ng-if="item.nid && item.hasOwnProperty('field_show_feed')" id="guides-feed" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/guides-feed.html'"></div-->
+  </div>
+</div> <!--end feeds-wrapper-->
+
+<div class="extra-wrapper content-wrapper" ng-if="$state.current.name != 'tabs.home'">
+  <div>
+    <div class="node-fields" ng-style="{ 'width' : (width < 660 ? width : width-320) + 'px' }" >
+      <div ng-class="{'inner-content-wrapper': inner.extra}" ng-init="inner.extra = false" ng-show="inner.extra">
+        <div class="left-wrapper">
+          <!--div ng-if="item.next_prev_links != ''" ng-bind-html="item.next_prev_links | sanitize"></div
+              --> 
+	      <div ng-if="item.hasOwnProperty('listing') && item.listing.hasOwnProperty('title')" ng-init="inner.extra = true"><label>See Full Listing:</label> <span ng-bind-html="item.listing.title | sanitize"></span></div>
+        <div ng-if="item.type == 'deal' && item.hasOwnProperty('field_related_listing') && item.field_related_listing.hasOwnProperty('und')" ng-init="inner.extra = true"><a href ui-sref="tabs.node({nid: item.field_related_listing.und[0].target_id, path: '/node/' + item.field_related_listing.und[0].target_id})" target="_self">Full Listing</a></div>
+          <div ng-if="(item.hasOwnProperty('field_location') && item.field_location.und[0]) || (item.hasOwnProperty('type') && (item.type == 'roundup' || item.type == 'cityguide'))" ng-init="inner.extra = true" class="locations-wrapper map-wrapper">
+            <div ng-show="!mapStatus.open" class="open-map">
+              <a href ng-click="mapOpen()" analytics-on="click" analytics-category="map" analytics-event="mapClick" analytics-label="listings-map-view-click" id="node-map-view"><i class="fa fa-map-marker" aria-hidden="true"></i> Show map of all locations.</a>
+            </div>
+            <div ng-show="mapStatus.open" class="close-map" style="text-align: right;"><a href ng-click="mapStatus.open = false">Close Map <strong>X</strong></a></div>
+            <div uib-collapse="!mapStatus.open">
+              <div id="map_canvas">
+                <ui-gmap-google-map center="map.center" zoom="map.zoom" draggable="true" dragging="true" options="options" pan="true">
+                  <ui-gmap-markers models="markers" coords="'self'" fit="true">
+                    <ui-gmap-marker idKey="marker.id" ng-repeat="marker in markers" coords="marker.coords" options="marker.options" icon="marker.icon" doCluster="map.doCluster" ng-click="marker.showInfo = true" ng-init="marker.showInfo = false">
+                      <marker-label content="marker.name" anchor="2 0" class="marker-labels"/>
+                        <ui-gmap-window ng-cloak  coords="marker.coords" isIconVisibleOnClick="true" options="options" show="marker.showInfo">
+                          <div class="map-infowindow" ng-class="{'small': marker.content.image == ''}">
+                            <div ng-if="marker.content.node_title != ''">{{marker.content.node_title}}</div>
+                            <strong>{{marker.content.title}}</strong>
+                            <div><a href ng-href="tel:{{marker.content.phone}}" analytics-on="click" analytics-category="map" analytics-event="contentClick" analytics-label="{{'contact_phone_link-node-' + marker.content.title.replace(title_replace_pattern, '_').toLowerCase()}}" style="color: #000000; font-weight: 400;">{{marker.content.phone }}</a></div>
+                            <div>{{marker.content.street}}</div>
+                            <div ng-if="marker.content.additional != ''">{{marker.content.additional}}</div>
+                            <div>{{marker.content.city}}{{marker.content.province != '' ? ', ' + marker.content.province : ''}} {{marker.content.postal_code}}</div>
+                            <div><a href ng-href="{{'https://www.google.com/maps/place/' + marker.content.street + ',' + marker.content.city + (marker.content.province != '' ? ', ' + marker.content.province : '')}}" target="_blank" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="Map on Post" class="gmap-map-link" >Open in Google Maps</a></div>
+                          </div>
+                        </ui-gmap-window>
+                    </ui-gmap-marker>
+                  </ui-gmap-markers>
+                </ui-gmap-google-map>
+              </div>
+            </div> <!--end map-wrapper-->
+            <div ng-if="item.hasOwnProperty('type') && item.type != 'cityguide' && location.hasOwnProperty('latitude') && location.latitude != '' && location.latitude != 0"  ng-repeat="location in item.field_location.und track by $index" class="item-location">
+              <br class="clear" />
+              <div><strong>{{ location.name }}</strong></div>
+              <!--
+              <div><a href ng-href="{{'https://www.google.com/maps/place/' + location.street + ',' + location.city + ',' + location.province}}" target="_blank" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="Map on Post" class="node-map-link" >map</a></div>
+              -->
+              <div>{{ location.street }} {{ location.additional }}</div>
+              <div>{{ location.city }}, {{ location.province }} {{ location.postal_code }}</div>
+              <div ng-if="location.phone"><a href ng-href="tel:{{location.phone}}" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="{{'contact_phone_link-node-' + item.title.replace(title_replace_pattern, '_').toLowerCase()}}">{{ location.phone }}</a></div>
+              <div>
+                <a href ng-click="getVenueContent(location.lid, location.name, (item.hasOwnProperty('title') ? item.title : (item.hasOwnProperty('name') ? item.name : 'no title')))" class="link"
+                  analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="click" analytics-label="open venue card"
+                  ><i class="fa fa-university" aria-hidden="true"></i> See more about this place.
+                </a>
+              </div>
+            </div>
+          </div><!--end locations-wrapper-->
+        </div><!-- end left wrapper -->
+          <div ng-if="item.type == 'event'">** Event dates/times are subject to change. Please click through to the event website to verify.</div>
+      </div><!--end inner-content-wrapper -->
+      <div ng-if="item.hasOwnProperty('type') && item.type != 'cityguide' && item.similar_content && item.similar_content != ''" class="similar-content">
+        <h3>Related <em>Articles</em></h3>
+        <div ng-bind-html="item.similar_content | sanitize"></div> 
+      </div> 
+      <button ng-if="item.type == 'directory' && item.field_claim_owner.length == 0" ng-click="claimOpen()" class="btn btn-default claim">
+        <i class="fa fa-map-pin" aria-hidden="true"></i> - Claim this Listing
+      </button>
+      <div uib-collapse="!showClaim.open" style="float: right; max-width: 360px;background: #E9F6FC; padding: 5px; margin: 5px;"><div>Claim to make edits, upgrade or renew this listing.</div><div><input type="checkbox" ng-model="vm.myChkModel" ng-change="certify(vm.myChkModel)">You are an authorized representative of the business.</div><div ng-show="showClaim.certified"><a href ng-href="{{'/node/' + item.nid + '/claim'}}" target="_top" alt="Claim Listing" title="Claim Listing">Log in or register to claim listing. &gt;</a></div></div>
+    </div><!-- end node-fields -->
+    <br class="clear" />
+    <div ng-if="width && width < 1024 && item.nid != 78080 && item.nid != 155724" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/bottom.html'" ng-class="'middlebar-widget'"></div>
+  </div><!-- end content-wrapper -->
+</div><!--end extra-wrapper-->
+
+<!--
+<div class="comments-wrapper content-wrapper">
+  <div class="comments" ng-if="item.type == 'directory'" ng-repeat="comment in item.comments">
+    <div><rating ng-model="comment.field_vote['#items'][0]['average']" readonly="true">{{ comment.field_vote['#items'][0]['average'] }}/5</rating></div> 
+    <div class="body"  ng-bind-html="comment.comment_body.und[0].safe_value | sanitize"></div>
+    <h4>{{comment.registered_name}} [{{ (comment.created * 1000) | date:'medium' }}]</h4>
+  </div>
+  <div class="comments" ng-if="item.type == 'directory'">
+    <a href="/comment/reply/{{ item.nid }}" target="_self">Add review</a>
+  </div>
+</div>
+end comments-wrapper-->
+<br class="clear" />
+
+</div><!-- end of page class wrapper -->
+
+<!-- Crunchify.com social sharing. Get your copy here: http://crunchify.me/1VIxAsz 
+-->
+<div ng-if="twitterURL && width && width >= 1024 && $state.current.name != 'tabs.home'" class="crunchify-social content-wrapper" id="mp-social-1" sticky anchor="bottom">
+  <div ng-if="width && width >= 1280" class="description">Share Mommy Poppins with your friends</div>
+  <span class="crunchify-link crunchify-twitter" ng-click="open(twitterURL)" url="{{ twitterURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="desktop twitter"
+    >Twitter</span>
+  <span class="crunchify-link crunchify-facebook" ng-click="open(facebookURL)" url="{{ facebookURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="desktop facebook"
+    >Facebook</span>
+  <span class="crunchify-link crunchify-googleplus" ng-click="open(googleURL)" url="{{ googleURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="desktop google"
+    >Google+</span>
+  <span class="crunchify-link crunchify-linkedin" ng-click="open(linkedInURL)" url="{{ linkedInURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="desktop linkedin"
+    >LinkedIn</span>
+  <span class="crunchify-link crunchify-pinterest" ng-click="open(pinterestURL)" url="{{ pinterestURL }}" data-pin-custom="true"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="desktop pinit"
+    >Pin It</span>
+</div>
+<div ng-if="twitterURL && width && width < 1024 && $state.current.name != 'tabs.home'" class="crunchify-social" id="mp-social-2" sticky anchor="bottom">
+  <a class="crunchify-link crunchify-twitter" href target="_blank" ng-href="{{ twitterURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="mobile twitter"
+    >Twitter</a>
+  <a class="crunchify-link crunchify-facebook" href target="_blank" ng-href="{{ facebookURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="mobile facebook"
+    >Facebook</a>
+  <a class="crunchify-link crunchify-googleplus" href target="_blank" ng-href="{{ googleURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="mobile google"
+    >Google+</a>
+  <a class="crunchify-link crunchify-linkedin" href target="_blank" ng-href="{{ linkedInURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="mobile linkedin"
+    >LinkedIn</a>
+  <a class="crunchify-link crunchify-pinterest" href target="_blank" ng-href="{{ pinterestURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="mobile pinit"
+     data-pin-custom="true">Pin It</a>
+  <a class="crunchify-link crunchify-whatsapp" href target="_blank" ng-href="{{ whatsappURL }}"
+    analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="share" analytics-label="mobile whatsapp"
+    >WhatsApp</a>
+</div>
+

@@ -1,0 +1,15 @@
+    <div class="btn-group" dropdown is-open="status.isopen" ng-repeat="item in menuItems track by $index" ng-hide="item.link.hidden == 1" >
+      <a type="button" class="btn btn-primary" ui-sref="tabs.node({ path: item.link.relative_path, tid: item.link.tid, nid: item.link.nid })" ng-click="item.showsub = clickMain(item)">
+        {{ item.link.title }} <span class="caret" ng-show="checkBelow(item)"></span>
+      </a>
+      <ul ng-show="item.showsub" ng-mouseleave="item.showsub = togglesub(item.showsub)">
+        <li ng-repeat="subitem in item.below">
+          <a type="button" class="btn btn-primary" ui-sref="tabs.node({ path: subitem.link.relative_path, tid: subitem.link.tid, nid: subitem.link.nid })" ng-click="subitem.showsub = clickMain(subitem)">{{subitem.link.title}} <span class="caret" ng-show="checkBelow(subitem)"></span></a>
+          <ul ng-show="subitem.showsub" ng-mouseleave="subitem.showsub = togglesub(subitem.showsub)">
+            <li ng-repeat="subsubitem in subitem.below">
+              <a type="button" class="btn btn-primary" ui-sref="tabs.node({ path: subsubitem.link.relative_path, tid: subsubitem.link.tid, nid: subsubitem.link.nid })">{{subsubitem.link.title}}</a>
+            </li>
+          </ul>
+        </li>
+      </ul>
+    </div>

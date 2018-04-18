@@ -1,0 +1,138 @@
+  <div ng-repeat="fc in related" ng-init="parentIndex = $index" ng-class="{{fc.section_style}}"
+    ng-style="{
+      'text-align': fc.section_style == 'center' ? fc.section_style : 'left', 
+      'margin-bottom': fc.section_style != '' ? '2em' : '',
+      'clear': fc.section_style != '' ? 'left' : '',
+      'overflow': fc.section_style != '' ? 'auto' : '',
+      }"
+    >
+    <div class="content-wrapper">
+      <div class="list-wrapper-outer" style="margin-bottom: 30px;">
+        <img ng-if="fc.header_image"
+          ng-src="{{(fc.header_image) ? (fc.header_image |  s3url : width < 320 ? 'image300x250' : fc.section_style == 'center' && width > 960 ? 'image960x650' : 'image620x420') : 'https://static.mommypoppins.com/undefined-image.jpg'}}"
+          alt="{{fc.header_image_caption}}"
+          ng-style="{
+            'float': ((fc.section_style == 'right' || fc.section_style == 'left') && width > 969 ? fc.section_style : 'none'),
+            'max-width': ((fc.section_style == 'right' || fc.section_style == 'left') && width > 969 ? '30%' : ''),
+            'margin-right': ((fc.section_style == 'left') && width > 969 ? '20px' : ''),
+            'margin-left': ((fc.section_style == 'right') && width > 969 ? '20px' : ''),
+            'width': (fc.section_style == 'right' || fc.section_style == 'left')  && width > 969 ? '' : '100%'
+            }"
+          >
+          <div class="caption" ng-bind-html="fc.header_image_caption | sanitize"></div>
+        <h2
+          ng-if="(!fc.section_style || fc.section_style != 'center')"
+          ng-bind-html="fc.headline | sanitize"
+          ng-style="{
+            'margin-bottom': width < 969 ? '1em' : '.25em',
+            'line-height' : '1.2em',
+            }"
+          ></h2>
+        <div class="list-wrapper"
+          ng-style="{
+            'margin-top': fc.section_style != '' ? '1em' : '',
+            'float': ((fc.section_style == 'left') && width > 969 ? fc.section_style : 'none'),
+            'max-width': ((fc.section_style == 'left') && width > 969 ? '65%' : ''),
+            }"
+          >
+          <div class="list-wrapper-inner">
+            <div class="list">
+              <!--div
+                id="the-list"
+                ng-include=""
+                src="domainStatic + '/sites/all/themes/mp_world/templates/list.html'"
+                ng-controller="TheListController"
+                ng-init="listType = 'relatedListing'"
+                ></div
+              -->
+              <div ng-repeat="fc_node in fc.nodes" active="fc_node.active" class="item" style="display: block; clear:left;"
+                ng-style="{'margin-bottom': fc.section_style != '' ? '.5em' : '' }"
+              >
+                <a
+                  href
+                  ui-sref="tabs.node({ path: fc_node.node_url, nid: fc_node.nid, tid: undefined, page: undefined})"
+                  analytics-on="click"
+                  analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}"
+                  analytics-event="contentClick"
+                  analytics-label="{{'link-section-' + fc_node.title.replace(title_replace_pattern, '_').toLowerCase()}}"
+                  ng-attr-id="{{'link-section-' + parentIndex + '-' + $index}}"
+                  >
+                  <!--span
+                    style="float:left; margin-right: 5px;"
+                    >
+                    <img
+                      ng-src="{{(fc_node.field_image.hasOwnProperty('und') && fc_node.field_image['und'][0]['uri']) ? (fc_node.field_image['und'][0]['uri'] |  s3url : 'image100x100') : 'https://static.mommypoppins.com/undefined-image.jpg'}}"
+                      ng-class="{'even' : parentIndex % 2 == 0, 'odd' : parentIndex % 2 != 0}"
+                      >
+                  </span>
+                  <span
+                  -->
+                    <h2
+                      ng-if="fc.section_style == 'center'"
+                      ng-bind-html="fc_node.title | sanitize"
+                      ng-style="{
+                        'margin-bottom': '1em',
+                        'line-height' : '1.2em',
+                        'color': '#000000',
+                        }"
+                      ></h2>
+                    <h4
+                      ng-if="(fc.section_style != 'center')"
+                      ng-style="{
+                        'font-size': (fc.section_style == 'right' || fc.section_style == 'left' ? '1.2em' : '1.4em'),
+                        'margin-top': fc.section_style == 'right' || fc.section_style == 'left' ? '.25em' : '2em',
+                        'margin-bottom': fc.section_style == 'right' || fc.section_style == 'left' ? '0' : '.25em'
+                        }">{{ fc_node.title }}
+                    </h4>
+                    <div
+                      ng-if="fc_node.related_summary != '' && (!fc.section_style || fc.section_style == '' || fc.section_style == 'center')"
+                      class="desc"
+                      style="color: #000000;"
+                      ng-bind-html="fc_node.related_summary | sanitize"
+                      >
+                    </div>
+                    <div class="desc body"
+                      ng-if="(!fc.section_style || fc.section_style == '' || fc.section_style == 'center')"
+                      style="color: #000000;"
+                      ><span
+                        ng-bind-html="fc_node.shortBody | sanitize"
+                        ></span><span class="read-more" style="color: #0071bc; padding-left: 5px;">READ MORE<span class="chevron right" style="padding-left: 5px;"></span>
+                      </span>
+                    </div>
+                    <div ng-if="fc_node.subscription_type && fc_node.deal && fc_node.deal.hasOwnProperty('title')" class="deal" >
+                      <span class="deal-icon">Deal</span>
+                      <span class="title">{{fc_node.deal.title}}</span>
+                    </div>
+                  <!--/span
+                  -->
+                </a>
+              </div><!-- end item-->
+              <!--div
+                ng-repeat-end
+                ng-if="parentIndex == 0 && $index==1"
+                class="ad ad-300x250"
+                ng-class="'ad-'+$index"
+                ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-' + ((parentIndex == 0) ? '1' : '2')}}"
+                serve-ad
+                ad-unit="{{'mediumrectangle' + ((parentIndex == 0) ? '' : 'btf')}}"
+                slot-slug="{{'div-gpt-ad-' + $state.current.name + '-' +((parentIndex == 0) ? '1' : '2') + ''}}"
+                style="clear:left;"
+                >
+              </div
+              -->
+            </div><!-- end item-list -->
+            <!--div
+              ng-if="parentIndex == 0"
+              ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-3'}}"
+              serve-ad ad-unit="textad"
+              slot-slug="{{'div-gpt-ad-' + $state.current.name + '-3'}}"
+              style="clear:left;"
+              >
+            </div
+            -->
+          </div><!-- end listings-wrapper-inner -->
+        </div><!-- end listings-wrapper -->
+      </div><!-- end listings-wrapper-outer -->
+    </div><!-- content-wrapper -->
+  </div>
+

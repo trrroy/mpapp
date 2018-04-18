@@ -1,0 +1,69 @@
+<div class="sponsored-wrapper">
+  <div class="content-wrapper">
+    <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-3'}}" serve-ad ad-unit="textad" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-3'}}">
+    </div>
+  </div>
+</div>
+<div class="main-wrapper content-wrapper">
+  <div class="main-content content-wrapper">
+    <div class="sidebar-wrapper">
+      <div id="sidebar-links" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/sidebar.html'" ng-init="widget = 'search'" class="sidebar-widget"></div>
+    </div><!-- end sidebar-wrapper -->
+    <div class="main-wrapper">
+      <h1><em>Search</em> Results</h1>
+  <div class="filters-wrapper">
+      <div class="filters-title">Filters:</div>
+      <span id="search-group" class="filter text" >
+        <input type="text" class="form-control event-search" ng-model="searchWords" ng-keypress="changeSearchWords($event, searchWords)" placeholder="Search" />
+        <button ng-show="searchWords" ng-click="searchWords = ''; changeSearchWords($event, searchWords)">X</button>
+      </span>
+      <span class="filter">
+        <div>
+          <button ng-click="f.locations.status.open = !f.locations.status.open" ng-class="{'active' : f.locations.status.open}">Locations</button>
+          <button ng-click="f.ages.status.open = !f.ages.status.open" ng-class="{'active' : f.ages.status.open}">Ages</button>
+          <button ng-click="f.types.status.open = !f.types.status.open" ng-class="{'active' : f.types.status.open}" class="filter-main">Categories</button>
+        </div>
+        <div class="tabs-horiz">
+          <uib-accordion close-others="true">
+            <uib-accordion-group is-open="f.ages.status.open" ng-init="f.ages.status.open = false">
+                <div id="ages-group" class="filters" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/search-filter.html'" ng-controller="SearchFiltersController" ng-init="serviceType = 'search'; itemType = 'searchAges'; label = 'ages'"></div>
+            </uib-accordion-group>
+            <uib-accordion-group is-open="f.locations.status.open" ng-init="f.locations.status.open = false">
+                <div id="neighborhood-group" class="filters" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/search-filter.html'" ng-controller="SearchFiltersController" ng-init="serviceType = 'search'; itemType = 'searchNeighborhoods'; label ='locations'"></div>
+            </uib-accordion-group>
+            <uib-accordion-group heading="Types" is-open="f.types.status.open" ng-init="f.types.status.open = false">
+              <div id="types-group" class="filters" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/search-filter.html'" ng-controller="SearchFiltersController" ng-init="serviceType = 'search'; itemType = 'searchTypes'; label = 'types'"></div>
+            </uib-accordion-group>
+          </uib-accordion>
+        </div>
+      </span>
+      <br class="clear" />
+  </div><!-- end filters-wrapper -->
+        <div id="tab-buttons">
+          <div
+            class="active"
+            >Articles
+          </div>
+          <a href
+            ui-sref="tabs.directory({'area': (area && area.tid ? area.tid : ''), 'keys': (searchWords && searchWords != '' ? searchWords : '') })"
+            >Directory
+          </a>
+          <a href 
+            ui-sref="tabs.events({'area[]': (area && area.tid ?  area.tid : ''), 'keys': (searchWords && searchWords != '' ? searchWords : '') })"
+            >Events
+          </a>
+        </div>
+      <div class="selections">
+         <div ng-repeat="tag in showTags track by $index" class="tag" ng-class="tag.filterName">{{ tag.name }} <a href="" ng-click="removeFilter('search', tag.filterName, tag)">X</a></div>
+      </div>
+      <div class="results-wrapper">
+        <uib-accordion close-others="false">
+          <uib-accordion-group heading="{{ totalListings > 0 ? 'Showing ' + totalPage + ' of ' + totalListings + ' listings. Use filters to refine results.' : totalListings == 0 ? 'No results. Refine your results. Enter a search term or choose other filters.' : 'searching...' }}" ng-init="mapStatus.open=false" is-open="false">
+          </uib-accordion-group>
+        </uib-accordion>
+        <div id="the-list" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/list.html'" ng-controller="TheListController" ng-init="listType = 'searchListing'"></div>
+      </div><!-- end results-wrapper  -->
+    </div><!-- end main-wrapper -->
+  </div><!-- end main-content content-wrapper -->
+</div><!-- end main-wrapper -->
+

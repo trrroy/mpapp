@@ -1,0 +1,187 @@
+<div ng-if="width >= 660 && (widget == 'directory' || (widget == 'node' && adParams.page == 'listing'))">
+  <div id="link-to-business-listings">
+    <a href="/mommy-poppins-business-listings-details" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="link-business-listings">Get listed on Mommy Poppins.<br><span>Add your business to our directory now.</span></a>
+  </div>
+</div>
+<div ng-if="width && width >= 1024 && ((widget == 'node' && adParams.page != 'listing')) || $state.current.name == 'tabs.home'">
+  <div ng-if="area.hasOwnProperty('tid') && area.tid != 1312" id="link-to-deals">
+    <a href ui-sref="tabs.directory({area: (area.hasOwnProperty('tid') ? area.tid : ''), deals: 1 })" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="link-deals">See our local DEALS page.</a>
+  </div>
+   <div class="title-bar">
+     <a href ui-sref="tabs.events({ 'area[]': (area.hasOwnProperty('tid') ? area.tid : '')})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="link-calendarwidget-title" id="link-calendarwidget-title">
+       <img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/icon-calendar.png'}}">
+       <div class="title">
+         <span>This Week In</span><br>{{area.name ? area.name : "All Regions"}}
+       </div>
+     </a>
+   </div>
+   <div class="calendar" ng-if="(widget == 'node' && width >= 660) || $state.current.name == 'tabs.home'" ng-init="isEventsCollapsed = false">
+     <div class="date-tabs">
+       <span ng-repeat="date in currentEventList"  class="date-tab" ng-init="date.active = ($index == 0)" ng-class="{active : date.active}" ng-click="date.active = true; $parent.isEventsCollapsed = false" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-calendarwidget-date-' + $index}}" ng-attr-id="{{'link-calendarwidget-date-' + $index}}">
+         <div class="day">{{date.day.charAt(0)}}</div><div class="date circle">{{date.date}}</div>
+       </span>
+     </div>
+     <!--div class="date-form filters">
+       <div class="date-button"><a href="/events" target="_self">Find Events by Date <img class="calendar-icon" src="/sites/all/themes/mp_world/images/calendar-aro.svg"></a></div>
+       <div ng-init="dateIsCollapsed = $state.current.name == 'tabs.home'" ng-click="dateIsCollapsed = !dateIsCollapsed" class="date-button">Find Events by Date <img class="calendar-icon" src="/sites/all/themes/mp_world/images/calendar-aro.svg"></div>
+       <div id="date-group" class="filters" uib-collapse="dateIsCollapsed">
+       <div class="from"><label>From</label> <input type="date" ng-model="startDate" ng-change="eventWidgetDateChange(startDate, 'start'); endDate = (endDate <= startDate) ? startDate : endDate;" min="{{ minDate | date:'yyyy-MM-dd' }}" placeholder="start date"  /></div>
+       <div class="to"><label>To</label> <input type="date" ng-model="endDate" ng-change="eventWidgetDateChange(endDate, 'end')" min="{{ startDate | date:'yyyy-MM-dd' }}" placeholder="end date (optional)"  /></div>
+       </div>
+     </div
+     -->
+     <uib-tabset ng-show="!isEventsCollapsed" justified="true" class="date-tabs-content">
+       <uib-tab ng-repeat="date in currentEventList"  active="date.active" disable="date.disabled" ng-init="parentIndex = $index">
+         <div class="detail" ng-class="{sponsored : event.field_data_field_sponsored_field_sponsored_value == '1'}" ng-repeat="event in date.events">
+           <div ng-if="event.field_data_field_sponsored_field_sponsored_value == '1'" class="featured">Featured</div>
+           <a href ui-sref="tabs.node({ path: event._field_data.nid.entity.node_url, nid: event.nid, tid: undefined, page: undefined })" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-sidebarevent-' + event.node_title.replace(title_replace_pattern, '_').toLowerCase()}}">{{event.node_title}}</a><br>
+           {{event.location_name}} - {{ (event.field_field_event_date[0].raw.value.substr(0, 10) + 'T' + event.field_field_event_date[0].raw.value.substr(10 + 1) | date: 'h:mm a') != '12:00 AM' ? (event.field_field_event_date[0].raw.value.substr(0, 10) + 'T' + event.field_field_event_date[0].raw.value.substr(10 + 1) | date: 'h:mm a') : 'various times' }}
+           <span ng-if="event.field_data_field_pick_field_pick_value == '1'" class="tag pick">Pick</span>
+         </div>
+       </uib-tab>
+     </uib-tabset>
+   </div>
+   <div class="cal-links">
+     <div class="all-events"><a href ui-sref="tabs.events({ 'area[]': (area.hasOwnProperty('tid') ? area.tid : '')})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="link-seeallevents" id="link-seeallevents">SEE ALL EVENTS <span class="chevron right"></span></a></div>
+     <div class="submit-events"><a href="/node/add/event" target="_self" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="link-submitevent" id="link-submitevent">SUBMIT AN EVENT +</a></div>
+   </div>
+</div>
+	  <div id="social-icons" ng-if="(width && width >= 660) && widget != 'directory' && adParams.page != 'listing'">
+	       <!--span class="glyphicon glyphicon-search" aria-hidden="true"></span> | <span class="glyphicon glyphicon-envelope" aria-hidden="true"></span> | Flc | FB | TW
+             -->
+	       <!--a ui-sref="tabs.search" target="{{inNG ? '' : '_self'}}"><img src="/sites/all/themes/mp_world/images/icon-search.png"></a
+             -->
+	       <a ng-href="{{ area.hasOwnProperty('field_facebook_link') && area.field_facebook_link.hasOwnProperty('und') ? area.field_facebook_link.und[0].value : 'http://www.facebook.com/pages/Mommy-Poppins/89502713647' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="sidebar-{{widget}}" analytics-label="social-facebook" id="social-facebook"><img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/facebook-white.svg'}}"></a>
+	       <a ng-href="{{ area.hasOwnProperty('field_instagram_link') && area.field_instagram_link.hasOwnProperty('und') ? area.field_instagram_link.und[0].value : 'https://instagram.com/mommypoppins/' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="sidebar-{{widget}}" analytics-label="social-instagram" id="social-instagram"><img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/instgram-white.svg'}}"></a>
+	       <a ng-href="{{ area.hasOwnProperty('field_twitter_link') && area.field_twitter_link.hasOwnProperty('und') ? area.field_twitter_link.und[0].value : 'http://twitter.com/mommypoppins' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="sidebar-{{widget}}" analytics-label="social-twitter" id="social-twitter"><img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/twitter---white.svg'}}"></a>
+	       <a ng-href="{{ area.hasOwnProperty('field_pinterest_link') && area.field_pinterest_link.hasOwnProperty('und') ? area.field_pinterest_link.und[0].value : 'https://www.pinterest.com/MommyPoppins' }}" target="_blank" analytics-on="click" analytics-event="socialClick" analytics-category="sidebar-{{widget}}" analytics-label="social-pinterest" id="social-pinterest"><img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/pinterest-icons-white.svg'}}"></a>
+	       <!--a href="https://www.flickr.com/people/mommypoppins/" target="_self"><img src="/sites/all/themes/mp_world/images/icon-flickr.png"></a
+             -->
+	  </div>
+<div ng-if="(widget == 'term' || (widget == 'node' && item.type != 'cityguide')) && termTitle && termList" ng-hide="width < 660 && (widget == 'guide' || widget=='term') && (termTitle == 'Categories' || termTitle == 'More Activities')">
+   <div class="title-bar" ng-class="{'term-key' : termKey}" ng-style="{textAlign: (width < 660) ? 'center' : 'left'}">
+     <a ng-if="termKey" href ui-sref="tabs.directoryType({ roottype: termKey.replace(' ', '-'), area: area.hasOwnProperty('tid') ? area.tid : '', type: termTid})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="link-termseeall" id="link-termseeall">
+       <div class="header">See all our listings in our directory:</div>
+     </a>
+     <div>
+     <a ng-if="termKey" href ui-sref="tabs.directoryType({ roottype: termKey.replace(' ', '-'), area: area.hasOwnProperty('tid') ? area.tid : '', type: termTid})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-termtitle-' + termTitle.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id"{{'link-termtitle-' + $index}}">
+       <img ng-src="{{['camps','classes','preschool','party', 'family fun'].indexOf(termKey.toLowerCase()) >= 0 ? domainStatic + '/sites/all/themes/mp_world/images/directory-title-' + termKey.replace(' ', '-') + '.jpg' : ''}}">
+       <span class="title" ng-bind-html="termTitle | sanitize"></span>
+     </a>
+     </div>
+     <div ng-if="!termKey" class="title" ng-bind-html="termTitle | sanitize"></div>
+   </div>
+   <div class="term-list">
+      <ul>
+        <li ng-repeat="term in termList | orderBy: 'name'">
+          <!--a ng-if="term.vid == 8" ui-sref="tabs.node({path: '/directory/' + termKey + '?type=' + term.tid, type: term.name})">{{term.name}}</a 
+          -->
+          <a ng-if="term.vid == 8" href ui-sref="tabs.directoryType({ roottype: termKey.replace(' ', '-'), area: area.hasOwnProperty('tid') ? area.tid : '', type: term.tid })" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-categorylist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-categorylist-' + $index}}">{{term.name}}</a>
+          <a ng-if="term.vid != 8" href ui-sref="tabs.node({ path: term.node_url, tid: term.tid, nid: undefined, page: undefined })" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-categorylist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-categorylist-' + $index}}">{{term.name}}</a>
+        </li>
+      </ul>
+   </div>
+</div>
+<div ng-show="width >= 660">
+  <div ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/email_subscribe.html'" ng-init="subscribepos = 'sidebar'"></div>
+</div>
+<div ng-if="width >= 660 && (widget == 'node' || widget == 'guide' || widget == 'events' || widget == 'directory' || widget == 'search')">
+    <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-4'}}" serve-ad ad-unit="minibanner" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-4'}}" class="ad ad-300x80">
+    </div>
+</div>
+<div ng-if="width >= 660 && (widget == 'events' || widget == 'directory' || widget == 'search' || adParams.page == 'listing' || adParams.page == 'event' || ( widget == 'term' && (adParams.page != 'category' || (adParams.page == 'category' && adParams.guide != 'wait' && category === true))))">
+    <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-1'}}" serve-ad ad-unit="mediumrectangle" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-1'}}" class="ad">
+    </div>
+</div>
+<div ng-if="width >= 660 && widget == 'node' && adParams.page != 'listing' && $state.current.name != 'tabs.home' && adParams.page != 'event' && adParams.page != 'areaguide' && adParams.type !='cityguide'" class="ad-wrapper">
+    <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-2'}}" serve-ad ad-unit="mediumrectanglebtf" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-2'}}" class="ad">
+    </div>
+</div>
+<div ng-if="width >= 660 && ((widget == 'node' && adParams.page != 'listing') || widget == 'events' || $state.current.name == 'tabs.home' || $state.current.name == 'tabs.events')">
+   <div id="sidebar-event-links">
+    <div>
+      <div ng-if="weeklyThings && area && area.field_events_week.und[0].title" class="event-links week">
+        <a href ui-sref="tabs.node({ path: weeklyThings.node_url, nid: weeklyThings.nid, tid: undefined, page: undefined })" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="sidebar-events-week" id="sidebar-events-week">
+          <img class="icon" ng-src="{{area.field_events_week_icon.und[0].uri ? domainStatic + area.field_events_week_icon.und[0].uri.replace('s3://','/') : domainStatic + '/sites/all/themes/mp_world/images/icon-week_picks.jpg' }}">
+          <div class="title" ng-bind-html="area.field_events_week.und[0].title | sanitize"></div>
+        </a>
+      </div>
+      <div ng-if="monthlyThings && area && area.field_events_month.und[0].title" class="event-links month">
+        <a href ui-sref="tabs.node({ path: monthlyThings.node_url, nid: monthlyThings.nid, tid: undefined, page: undefined})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="sidebar-events-month" id="sidebar-events-month">
+          <img class="icon" ng-src="{{area.field_events_month_icon.und[0].uri ? domainStatic + area.field_events_month_icon.und[0].uri.replace('s3://','/') : domainStatic + '/sites/all/themes/mp_world/images/icon-golist.jpg' }}">
+          <div class="title" ng-bind-html="area.field_events_month.und[0].title | sanitize"></div>
+        </a>
+      </div>
+      <div ng-if="area && area.field_events_season.und[0].url" class="event-links season">
+        <a href ui-sref="tabs.node({ path: area.field_events_season.und[0].url, nid: area.field_events_season.und[0].nid, tid: undefined, page: undefined})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="sidebar-events-season" id="sidebar-events-season">
+          <img class="icon" ng-src="{{area.field_events_season_icon.und[0].uri ? domainStatic + area.field_events_season_icon.und[0].uri.replace('s3://','/') : domainStatic + '/sites/all/themes/mp_world/images/icon-seasonal.jpg' }}">
+          <div class="title" ng-bind-html="area.field_events_season.und[0].title | sanitize"></div>
+        </a>
+      </div>
+      <div ng-if="area && area.field_besties.und[0].url" class="event-links besties">
+        <a href ui-sref="tabs.node({ path: area.field_besties.und[0].url, nid: area.field_besties.und[0].nid, tid: undefined, page: undefined})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="sidebar-events-besties" id="sidebar-events-besties">
+          <img class="icon" ng-src="{{area.field_besties_icon.und[0].uri ? domainStatic + area.field_besties_icon.und[0].uri.replace('s3://','/') : ''}}">
+          <div class="title" ng-bind-html="area.field_besties.und[0].title | sanitize"></div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<div ng-if="width >= 660 && (dirList && dirList.length > 0 && (widget == 'term' || widget == 'guide'))">
+  <div class="dirlistings">
+    <h3> Featured <em>Listings</em></h3>
+    <div ng-repeat="node in dirList" class="dirlisting">
+      <a href ui-sref="tabs.node({ path: node.node_url, nid: node.nid, tid: undefined, page: undefined})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-sidebar-featured-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-sidebar-featured-' + $index}}">
+         <div class="detail-title">
+           {{node.title}}
+         </div>
+          <img ng-src="{{node.image_main |  s3url : 'image185x95'}}">
+      </a>
+    </div>
+  </div>
+</div>
+
+<div ng-if="width && width >= 660 && (widget != 'term' || (widget == 'term' && adParams.page != 'category') || ( widget == 'term' && adParams.page == 'category' && adParams.guide != 'wait' && (related.length || category === true)))">
+  <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-5'}}" serve-ad ad-unit="largerectangle" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-5'}}" class="ad ad-300x600">
+  </div>
+</div>
+
+<div ng-if="width >= 660 && (widget == 'guide' || (widget == 'node' && (adParams.page == 'listing' || adParams.page == 'event')) || widget == 'events' || widget == 'directory' || widget == 'search') && $state.current.name != 'tabs.home'" class="ad-wrapper">
+    <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-2'}}" serve-ad ad-unit="mediumrectanglebtf" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-2'}}" class="ad">
+    </div>
+</div>
+
+<div ng-if="width && (width >= 1024 || (width >= 660 && $state.current.name == 'tabs.home')) && ((widget != 'term' && (item.hasOwnProperty('type') && item.type != 'areaguide' && item.type != 'cityguide')) || $state.current.name == 'tabs.home') && regionTitle && regionList && regionList.length > 0" class="term-list-wrapper regions">
+   <div class="title-bar"  ng-style="{textAlign: (width < 660) ? 'center' : 'left'}" ng-click="regionListCollapse = !regionListCollapse">
+     <div class="title" ng-bind-html="regionTitle | sanitize"></div>
+     <img ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-chevron-thin-small-' + (regionListCollapse ? 'down' : 'up') + '.svg'}}" aria-hidden="true" />
+   </div>
+   <div class="term-list" uib-collapse="regionListCollapse" ng-init="regionListCollapse = true">
+      <ul>
+        <li ng-repeat="term in regionList | orderBy: 'name'">
+          <!--a ng-if="term.vid == 8" ui-sref="tabs.node({path: '/directory/' + termKey + '?type=' + term.tid, type: term.name})">{{term.name}}</a
+              -->
+          <a ng-if="term.vid == 8" href ui-sref="tabs.directoryType({ roottype: termKey.replace(' ', '-'), area: area.hasOwnProperty('tid') ? area.tid : '', type: term.tid })" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="{{'link-neighborhoodlist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-neighborhoodlist-' + $index}}">{{term.name}}</a>
+          <a ng-if="term.vid != 8" href ui-sref="tabs.node({ path: term.node_url, nid: undefined, tid: term.tid, page: undefined })" analytics-on="click" analytics-category="{{item.hasOwnProperty('type') ? item.type : 'term' }}" analytics-event="contentClick" analytics-label="{{'link-neighborhoodlist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-neighborhoodlist-' + $index}}">{{term.name}}</a>
+      </ul>
+   </div>
+</div>
+<div ng-if="((width && width >= 1024) || $state.current.name == 'tabs.home') && (widget != 'term' || (widget == 'term' && termTitle != 'More Activities')) && categoryList" class="bottom-categories term-list-wrapper">
+   <div class="title-bar" ng-style="{textAlign: (width < 660) ? 'center' : 'left'}" ng-click="categoryListCollapse = !categoryListCollapse">
+     <div class="title">Activity <span>Guides</span></div>
+     <img ng-if="adParams.page == 'listing' || width < 660" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-chevron-thin-small-' + (categoryListCollapse ? 'down' : 'up') + '.svg'}}" aria-hidden="true" />
+   </div>
+   <div class="term-list" uib-collapse="categoryListCollapse" ng-init="categoryListCollapse = (adParams.page == 'listing') || (width && width < 660)">
+      <ul>
+        <li ng-repeat="term in categoryList | orderBy: 'name'">
+          <!--a ng-if="term.vid == 8" ui-sref="tabs.node({path: '/directory/' + termKey + '?type=' + term.tid, type: term.name})">{{term.name}}</a
+              -->
+          <a ng-if="term.vid == 8" href ui-sref="tabs.directory({ area: area.hasOwnProperty('tid') ? '&area=' + area.tid : '', type: term.tid})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-bottom-categorylist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-bottom-categorylist-' + $index}}">{{term.name}}</a>
+          <a ng-if="term.vid != 8" href ui-sref="tabs.node({ path: term.node_url, tid: term.tid, nid: undefined, page: undefined})" analytics-on="click" analytics-category="sidebar-{{widget}}" analytics-event="sidebarClick" analytics-label="{{'link-bottom-categorylist-' + term.name.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-bottom-categorylist-' + $index}}">{{term.name}}</a>
+      </ul>
+   </div>
+</div>
+

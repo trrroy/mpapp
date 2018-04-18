@@ -1,0 +1,77 @@
+  <div ng-repeat-start="fc in spotlight" class="section {{'section-'+$index}}" ng-class="{guide: item.type == 'guide', term: item.tid && $state.current.name != 'tabs.home'}"  ng-init="parentIndex = $index">
+    <div ng-if="!(parentIndex > 1 && width && width < 420 && $state.current.name == 'tabs.home')" class="content-wrapper">
+      <div 
+        class="gallery mobile"
+        ng-attr-gallery="{{true}}"
+        >
+        <!-- shown for desktop if 1st section and term/guide/areaguide -->
+        <!-- OR, desktop and anything after first section -->
+        <!-- OR, mobile and any section after the two sections -->
+        <div ng-if="$index == 0 && $state.current.name == 'tabs.home' && width && width >= 1280" id="spotlight"></div>
+        <h3 ng-if="($state.current.name == 'tabs.home' && width && width >= 1280) || ($index > 0 && width > 420) || (width <= 420 && $index >= 1 && $state.current.name != 'tabs.home')" ng-bind-html="fc.headline.value | sanitize"></h3>
+        <h3 ng-if="$state.current.name != 'tabs.home' && $index == 0 && item.nid && (width && width >= 1280 && (item.type == 'guide' || item.type == 'areaguide'))" ng-bind-html="item.title | sanitize"></h3>
+        <h3 ng-if="$state.current.name != 'tabs.home' && $index == 0 && item.tid" ng-bind-html="item.name | sanitize"></h3>
+        <div ng-if="$state.current.name != 'tabs.home' && $index == 0 && item.tid" ng-bind-html="item.description | sanitize" class="description"></div>
+        <div class="listings-wrapper">
+        <div ng-attr-gallery-window="{{true}}"
+          class="gallery-window"
+          >
+          <div ng-attr-gallery-item-list="{{true}}"
+            class="item-list gallery-item-list">
+            <div
+              ng-repeat-start="fc_node in fc.nodes"
+              ng-if="(parentIndex == 0) || (parentIndex ==1 && (($index <= 4 && ($state.current.name == 'tabs.home' || item.type == 'areaguide')) || ($index <= 5)) && ((width >= 420 && $state.current.name == 'tabs.home') || ($state.current.name != 'tabs.home'))) || (parentIndex >= 2 && $index <= 5)"
+              active="fc_node.active"
+              class="listing gallery-item"
+              ng-attr-gallery-item="{{true}}"
+              >
+            <a href ui-sref="tabs.node({ path: fc_node.node_url, nid: fc_node.nid, tid: undefined, page: undefined})" analytics-on="click" analytics-category="relatedContent" analytics-event="contentClick" ng-attr-id="{{'link-section-' + parentIndex + '-' + $index}}" analytics-label="{{'link-section-' + fc_node.title.replace(title_replace_pattern, '_').toLowerCase()}}"
+              >
+              <img
+                class="tiles"
+                ng-src="{{(fc_node.field_image.hasOwnProperty('und') && fc_node.field_image['und'][0]['uri']) ? (fc_node.field_image['und'][0]['uri'] |  s3url : ((parentIndex < 2 && item.type != 'guide' && item.type != 'roundup') || (parentIndex == 0 && (item.type == 'guide') || item.type == 'roundup')) ? 'image300x250' : (parentIndex % 2 == 0 && item.type != 'guide' && item.type != 'roundup') ? 'image100x100' : 'image220x190') : 'https://static.mommypoppins.com/undefined-image.jpg'}}"
+                ng-class="{'even' : parentIndex % 2 == 0, 'odd' : parentIndex % 2 != 0, 'guide' : item.type == 'guide'}"
+                >
+              <div class="detail-title-bg" ng-class="{'featured' : fc_node.field_listing_level.und[0].value == 'PTNM' || fc_node.field_listing_level.und[0].value == 'Premium', 'sponsored' :  fc_node.field_pick.und[0].value == '1', 'guide' : fc_node.type == 'guide'}"></div>
+              <div class="detail-title" ng-class="{'featured' : fc_node.field_listing_level.und[0].value == 'PTNM' || fc_node.field_listing_level.und[0].value == 'Premium'}">{{ fc_node.title }}</div>
+              <div ng-if="(parentIndex < 2 && item.type != 'guide' && item.type != 'roundup') || (((item.type == 'guide' || item.type == 'roundup') || item.term_guide) && parentIndex == 0)" class="detail-desc" ng-class="{'featured' : fc_node.field_listing_level.und[0].value == 'PTNM' || fc_node.field_listing_level.und[0].value == 'Premium'}"><span ng-bind-html="fc_node.shortBody | sanitize"></span></div>
+              <div ng-if="(parentIndex > 2  && parentIndex % 2 != 0) || ((item.type == 'guide' || item.type == 'roundup') && parentIndex > 0)" class="detail-desc"><span ng-bind-html="fc_node.shortBody | sanitize"></span> <span class="read-more">READ MORE <span class="chevron right"></span></span></div>
+              <div class="tag sponsored" ng-if="parentIndex < 2 && fc_node.field_pick.und[0].value == '1'">SPONSORED</div>
+              <div class="tag featured" ng-if="parentIndex < 2 && (fc_node.field_listing_level.und[0].value == 'PTNM' || fc_node.field_listing_level.und[0].value == 'Premium')">FEATURED</div>
+              <div class="tag guide" ng-if="fc_node.type == 'guide'">GUIDE</div>
+              <div
+                ng-if="fc_node.hasOwnProperty('field_video_clip') && fc_node.field_video_clip.hasOwnProperty('und') && fc_node.field_video_clip.und.length > 0 && fc_node.field_video_clip.und[0].value != ''"
+                class="video"
+                ></div>
+            </a>
+          </div><!-- end listing-->
+          <div
+            ng-repeat-end
+            ng-if="(parentIndex == 0 || (parentIndex == 1 && item.type != 'guide' && item.type != 'roundup')) && $index==1"
+            class="gallery-item listing tiles ad ad-300x250"
+            ng-class="'ad-'+$index"
+            ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-' + ((parentIndex == 0) ? '1' : '2')}}"
+            ng-attr-gallery-item="{{true}}"
+            serve-ad ad-unit="{{'mediumrectangle' + ((parentIndex == 0) ? '' : 'btf')}}"
+            slot-slug="{{'div-gpt-ad-' + $state.current.name + '-' +((parentIndex == 0) ? '1' : '2') + ''}}"
+            >
+          </div>
+            </div><!-- end gallery-item -->
+          </div><!-- end gallery-item-list -->
+        </div><!-- end gallery-window -->
+        <!--div gallery-indicators class="gallery-indicators"></div--><!-- The little dots that tell you where you are 
+        -->
+        <div class="gallery-nav" class="gallery-nav" ng-swipe-left="nextItem()" ng-swipe-right="previousItem()"><!-- Nav actions -->
+          <a ng-click="previousItem()" class="previous" analytics-on="click" analytics-event="contentClick" analytics-category="galleryNav" analytics-label="gallery-previous" ng-attr-id="{{'gallery-previous-' + parentIndex}}"><span class="text">Previous</span></a>
+          <a ng-click="nextItem()" class="next" analytics-on="click"  analytics-event="contentClick" analytics-category="galleryNav" analytics-label="gallery-next" ng-attr-id="{{'gallery-next-' + parentIndex}}"><span class="text">Next</span></a>
+        </div>
+        </div><!-- end listings-wrapper-->
+      </div><!-- end gallery-big -->
+    </div><!-- content-wrapper -->
+  </div>
+  <div ng-repeat-end ng-if="parentIndex == 0" class="sponsored-wrapper">
+    <div class="content-wrapper">
+      <div ng-attr-id="{{'wrapper-div-gpt-ad-' + $state.current.name + '-3'}}" serve-ad ad-unit="textad" slot-slug="{{'div-gpt-ad-' + $state.current.name + '-3'}}">
+      </div>
+    </div>
+  </div>

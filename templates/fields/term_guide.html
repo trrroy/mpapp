@@ -1,0 +1,8 @@
+<div>
+  <h2 ng-bind-html="item.term_guide.title | sanitize"></h2>
+  <div ng-if="item.term_guide.hasOwnProperty('field_title_description') && item.term_guide.field_title_description.hasOwnProperty('und')" ng-bind-html="item.term_guide.field_title_description.und[0].value | sanitize"></div>
+  <div class="body"  ng-bind-html="item.term_guide.body_parsed | sanitize"></div>
+  <div ng-if="item.term_guide.hasOwnProperty('field_sub_body') && item.term_guide.field_sub_body.hasOwnProperty('und')" ng-bind-html="item.term_guide.field_sub_body.und[0].value | sanitize"></div>
+<a ng-if="item.term_guide.hasOwnProperty('nid')" href="/node/{{item.term_guide.nid}}/edit" target="_self">edit guide</a>
+</div>
+

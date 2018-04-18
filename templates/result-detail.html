@@ -1,0 +1,161 @@
+<div class="page-content" ng-class="{'home' : $state.current.name == 'tabs.home', 'node': result.detail.nid, 'term' : result.detail.tid, 'mobile': width && width < 1280, 'desktop': width >= 1280 }">
+<div ng-if="message && message != ''" class="message-user">{{message}}</div>
+
+<div ng-if="result.detail.nid" class="content-head-wrapper content-wrapper">
+  <div class="node-fields">
+      <img class="lead-image" ng-if="result.detail.hasOwnProperty('field_image') && result.detail.field_image.hasOwnProperty('und') && (!result.detail.hasOwnProperty('field_images') || !result.detail.field_images.hasOwnProperty('und')) && result.detail.type != 'event' && (result.detail.type != 'directory' || (result.detail.type == 'directory' && dir_special.indexOf(result.detail.field_listing_level.und[0].value) != -1))" ng-src="{{result.detail.field_image.und[0].uri | s3url: width && width < 970 ? 'image300x250' : 'image620x420'}}" title="{{result.detail.title}}">
+      <img class="lead-image-event" ng-if="result.detail.type == 'event' && (width && width >= 467) && result.detail.hasOwnProperty('field_image') && result.detail.field_image.hasOwnProperty('und')" ng-src="{{result.detail.field_image.und[0].uri | s3url: 'image140x116'}}" title="{{result.detail.title}}">
+
+      <div ng-if="result.detail.hasOwnProperty('field_images') && result.detail.field_images.hasOwnProperty('und') && (result.detail.type != 'directory' || (result.detail.type == 'directory' && dir_special.indexOf(result.detail.field_listing_level.und[0].value) != -1))" gallery class="gallery node">
+        <!-- The images -->
+        <div gallery-window class="gallery-window" ng-if="width >= 680">
+          <div gallery-item-list class="gallery-item-list" ng-init="isWrapping = true" ng-class="{wrapping: isWrapping}">
+            <div gallery-item ng-repeat="image in result.detail.field_images.und" active="image.active" class="gallery-item">
+              <img ng-src="{{image.uri | s3url: width && (width < 620 || (width > 727 && width < 970)) ? 'image300x250' : 'image620x420'}}" title="{{image.title}}">
+            </div>
+          </div>
+        <div class="gallery-nav" class="gallery-nav" ng-swipe-left="nextItem()" ng-swipe-right="previousItem()"><!-- Nav actions -->
+          <a ng-click="previousItem()" class="previous"><span class="text">Previous</span></a>
+          <a ng-click="nextItem()" class="next"><span class="text">Next</span></a>
+        </div>
+        </div>
+      </div>
+      <h1>{{result.detail.title}}</h1>
+      <div ng-if="result.detail.hasOwnProperty('created') && result.detail.type == 'blog' || result.detail.type == 'gallery'">{{ (result.detail.created * 1000) | date:'shortDate' }} - <a href="/user/{{result.detail.uid}}" target="_top">By {{result.detail.name}}</a></div>
+      <!--div ng-if="result.detail.hasOwnProperty('field_title_description') && result.detail.field_title_description.hasOwnProperty('und')" ng-bind-html="result.detail.field_title_description.und[0].value | sanitize"></div
+      -->
+      <!--div ng-if="result.detail.type == 'directory'"><uib-rating ng-model="result.detail.field_vote[0]['average']['#rating']" readonly="true">{{ result.detail.field_vote[0]['average']['#rating'] }}/5</uib-rating></div
+      -->
+      <div ng-if="(result.detail.subscription_type || result.detail.type == 'event') && result.detail.deal && result.detail.deal.hasOwnProperty('title')" class="deal" ng-click="result.detail.deal.hasOwnProperty('url') && result.detail.deal.url != NULL ? dealLink(result.detail.deal.url) : null" ng-class="{'deal-link' : result.detail.deal.hasOwnProperty('url')}">
+        <span class="deal-icon">Deal</span>
+        <div class="title">{{result.detail.deal.title}}</div>
+        <div class="body"><span ng-bind-link-out="result.detail.deal.body | sanitize"></span></div>
+      </div>
+
+
+    <!--div ng-if="result.detail.next_prev_links != ''" ng-bind-html="result.detail.next_prev_links | sanitize"></div
+    --> 
+      <div ng-if="result.detail.hasOwnProperty('field_event_date') && result.detail.field_event_date.hasOwnProperty('und')" class="event-info">
+          <div><strong ng-bind-html="result.ngContent.when | sanitize"></strong>
+            <span
+              ng-if="result.detail.hasOwnProperty('event_repeats') && result.detail.event_repeats != ''"
+              > 
+              <a
+                href
+                ng-hide="!isRepeatsCollapsed"
+                ng-click="isRepeatsCollapsed = isRepeatsCollapsed ? false : true" class="link"
+                analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="open" analytics-label="see all dates"
+                >- see all dates
+              </a>
+              <div uib-collapse="isRepeatsCollapsed" ng-init="isRepeatsCollapsed = true" class="">
+                <span ng-if="result.detail.hasOwnProperty('event_repeats') && result.detail.event_repeats != ''" ng-bind-html="result.detail.event_repeats | sanitize"></span>
+              </div>
+            </span>
+          </div>
+      <div ng-if="result.detail.hasOwnProperty('field_age') && result.detail.field_age.hasOwnProperty('und')"><label>Age:</label> <span ng-bind-html="result.detail.field_age.und[0].value | sanitize"></span></div> 
+      <!--div ng-if="result.detail.hasOwnProperty('field_contact') && result.detail.field_contact.hasOwnProperty('und')"><label>Contact:</label> <span ng-bind-html="result.detail.field_contact.und[0].value | sanitize"></span></div
+      --> 
+      <div ng-if="result.detail.hasOwnProperty('field_application_process') && result.detail.field_application_process.hasOwnProperty('und')"><label>Application Process:</label> <span ng-bind-html="result.detail.field_application_process.und[0].value | sanitize"></span></div> 
+      <div ng-if="result.detail.hasOwnProperty('field_philosophy') && result.detail.field_philosophy.hasOwnProperty('und')"><label>Philosophy:</label> <span ng-bind-html="result.detail.field_philosophy.und[0].value | sanitize"></span></div> 
+      <div ng-if="result.detail.hasOwnProperty('field_agecutoff') && result.detail.field_agecutoff.hasOwnProperty('und')"><label>Age Cut-off:</label> <span ng-bind-html="result.detail.field_agecutoff.und[0].value | sanitize"></span></div> 
+      <div ng-if="result.detail.hasOwnProperty('field_area') && result.detail.field_area.hasOwnProperty('und')"><label>Area:</label> <span ng-bind-html="result.detail.field_area.und[0].value | sanitize"></span></div> 
+      <!--div ng-if="result.detail.hasOwnProperty('field_pick') && result.detail.field_pick.hasOwnProperty('und') && result.detail.field_pick.und[0].value == 1">Editor's Pick!</div
+      -->
+      <div ng-if="result.detail.hasOwnProperty('field_tuition') && result.detail.field_tuition.hasOwnProperty('und')"><label>Tuition:</label> <span ng-bind-html="result.detail.field_tuition.und[0].value | sanitize"></span></div> 
+      <div ng-if="result.detail.hasOwnProperty('field_price') && result.detail.field_price.hasOwnProperty('und')"><label>Price:</label> <span ng-bind-html="result.detail.field_price.und[0].value | sanitize"></span></div>
+        <div
+          >
+          <div ng-click="isCalAddCollapsed=false" class="link add-to-cal-btn" ng-hide="isCalAddCollapsed === false"
+            analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="open" analytics-label="add-to-calendar calendar"
+            >+ add to your calendar
+          </div>
+          <div uib-collapse="isCalAddCollapsed" ng-init="isCalAddCollapsed = true" class="add-to-cal">
+          <div>Choose a date and calendar type to add this event:</div>
+          <select
+            style="padding: 2px 3px 3px 3px;"
+            ng-model="event_delta"
+            ng-init="event_delta = result.ngContent.delta"
+            >
+            <option
+              ng-repeat="ev in result.detail.field_event_date['und']"
+              ng-if="convertDT(ev.value2) >= nowMinusDay"
+              value="{{$index}}"
+              ng-selected="{{result.ngContent.delta == $index+''}}"
+              >{{ (convertDT(ev.value) | date:'shortTime' | lowercase) == '12:00 am' ? (convertDT(ev.value) | date:'shortDate' | lowercase) : (convertDT(ev.value) | date:'short' | lowercase) }}
+              {{ (convertDT(ev.value) | date:'shortTime' | lowercase) != (convertDT(ev.value2) | date:'shortTime' | lowercase) ? ' - ' +(convertDT(ev.value2) | date:'shortTime' | lowercase) : '' }}
+            </option>
+          </select>
+          <select
+            ng-model="calendar_type"
+            ng-init="calendar_type = 'google'"
+            style="padding: 2px 3px 3px 3px;"
+            >
+            <option value="google">Google</option>
+            <option value="yahoo">Yahoo</option>
+            <option value="ical">iCal</option>
+          </select>
+          <button
+            ng-click="setCal(event_delta, calendar_type, result.node_url)"
+            analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="add" analytics-label="add-to-calendar calendar"
+            >add
+          </button>
+        </div>
+      </div>
+      </div>
+      <div ng-if="result.detail.ngContent.specialTags != ''" ng-bind-html="result.detail.ngContent.specialTags | sanitize"></div>
+    <!--div id="tags" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/tags.html'"></div
+    -->
+      <div class="body">
+        <div ng-if="result.detail.ngContent.hasOwnProperty('summary') && (result.detail.type != 'directory' || (result.detail.type == 'directory' && dir_special.indexOf(result.detail.field_listing_level.und[0].value) != -1))" ng-bind-html="result.detail.ngContent.summary | sanitize"></div>
+        <div class="node-links">
+          <a href ui-sref="tabs.node({ path: result.detail.node_url, nid: result.detail.nid})" target="{{ $state.current.name == 'tabs.directoryType' && $state.params.hasOwnProperty('keys') && $state.params.keys != '' && $state.params.keys != null ? '_self' : null}}" class="bigbutton-link" analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="expanded-detail-contentClick" analytics-label="{{'readmore-' + result.detail.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'readmore-' + result.detail.nid}}">FULL DETAILS</a>
+          <a ng-if="result.detail.hasOwnProperty('field_website') && result.detail.field_website.hasOwnProperty('und')" href ng-href="{{result.detail.field_website.und[0].url.match('http') ? result.detail.field_website.und[0].url : 'http://' + result.detail.field_website.und[0].url}}" target="_blank" class="bigbutton-link" analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="expanded-detail-contentClick" analytics-label="{{'website-' + result.detail.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'website-' + result.detail.nid}}">WEBSITE</a>
+          <a ng-if="result.detail.hasOwnProperty('field_plemail') && result.detail.field_plemail.hasOwnProperty('und')" href ng-href="mailto:{{result.detail.field_plemail.und[0].email | sanitize}}?subject=Inquiry from MommyPoppins.com%20" target="_blank" class="bigbutton-link" analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="expanded-detail-contentClick" analytics-label="{{'email-' + result.detail.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'email-' + result.detail.nid}}"><i class="fa fa-envelope-o" aria-hidden="true"></i></a>
+          <span ng-if="(width && width < 1024) && result.detail.type == 'directory' && result.detail.hasOwnProperty('field_location') && result.detail.field_location.und[0]">
+            <span ng-if="$index == 0 && location.hasOwnProperty('latitude') && location.latitude != '' && location.latitude != 0"  ng-repeat="location in result.detail.field_location.und track by $index" class="item-location">
+              <span ng-if="location.phone"><a href ng-href="tel:{{location.phone}}" class="bigbutton-link" analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="expanded-detail-contentClick" analytics-label="{{'contact_phone_button-summary-' + result.detail.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'summary-phone_button-' + result.detail.nid}}" title="{{location.phone}}"><i class="fa fa-phone" aria-hidden="true"></i></a></span>
+            </span>
+          </span><!--end locations-phone-wrapper-->
+        </div>
+      </div>
+    </div><!-- end node-fields -->
+</div><!-- end content-head-wrapper -->
+    <div class="detail-sidebar-wrapper">
+      <div ng-if="location.hasOwnProperty('latitude') && location.latitude != '' && location.latitude != 0"  ng-repeat="location in result.detail.field_location.und track by $index" class="item-location">
+        <div> <strong>{{ location.name }}</strong> </div>
+        <div>{{ location.street }} {{ location.additional }}</div>
+        <div>{{ location.city }}, {{ location.province }} {{ location.postal_code }}
+        <div><a href ng-href="http://maps.google.com/?q={{location.street + ', ' + location.city + ', ' + location.province + ' ' + location.postal_code}}" target="_blank" analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="expanded-detail-contentClick" analytics-label="map link">map</a></div>
+      </div>
+      <div ng-if="location.phone"><a href ng-href="tel:{{ location.phone }}" analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="expanded-detail-contentClick" analytics-label="{{'contact_phone_link-node-' + result.detail.title.replace(title_replace_pattern, '_').toLowerCase()}}">{{ location.phone }}</a></div>
+      <div>
+        <a href ng-click="getVenueContent(location.lid, location.name, 'results-detail-' + result.detail.title)" class="link"
+          analytics-on="click" analytics-category="{{result.detail.hasOwnProperty('type') ? result.detail.type : 'term' }}" analytics-event="click" analytics-label="open venue card calendar"
+          ><i class="fa fa-university" aria-hidden="true"></i> See more about this place.
+        </a>
+      </div>
+    </div>
+      <!--div class="addthis_native_toolbox" sn-addthis-toolbox
+           data-share="{
+                title: result.detail.title,
+                url: 'https://mommypoppins.com' + result.detail.node_url,
+                description: ''
+            }">
+          <span ng-if="result.detail.type == 'event'"><label>Invite Friends:</label></span>
+          <a href class="addthis_button_twitter" title="Twitter"></a>
+          <a href class="addthis_button_facebook" title="Facebook"></a>
+      </div-->
+      <!--div ng-if="result.detail.ngContent.hasOwnProperty('delta') && result.detail.ngContent.delta !== null" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/fields/calendar-add.html'" ng-init="eventData = result.detail; trackLabel='eventExpanded'"></divi
+      -->
+      <div ng-if="result.detail.nid" class="controls-wrapper content-wrapper" ng-init="editIsCollapsed = true">
+        <div uib-collapse="editIsCollapsed">
+          <a ng-if="result.detail.hasOwnProperty('nid')" href="/node/{{result.detail.nid}}/edit" target="_self">edit node [{{result.detail.type}}]</a>
+        </div>
+        <div ng-click="editIsCollapsed = !editIsCollapsed" class="link-edit">
+          <i class="fa fa-pencil-square-o"></i>
+        </div>
+      </div><!--end controls-wrapper-->
+
+
+</div><!-- end of page class wrapper -->
+

@@ -1,0 +1,65 @@
+<!-- A home page -->
+<div ng-if="$state.current.name == 'tabs.home'">
+  <h3>Latest <em>Articles</em></h3>
+  <div class="section section-latest">  
+    <div class="latest-featured">
+      <div ng-if="$index < 2" ng-repeat="node in latestList | orderBy: '-created'" class="listing featured {{$index < 2 ? 'featured-'+$index : ''}}">
+        <div class="inner">
+          <a href ui-sref="tabs.node({ path: node.node_url, nid: node.nid, tid: '', page: undefined })" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latestfeatured-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latestfeatured-' + $index}}">
+            <img class="tiles" ng-src="{{node.field_image['und'][0]['uri'] |  s3url : width && width < 1280 ? 'image300x250' : 'image220x190'}}">
+            <div class="detail-title">{{ node.title }}</div>
+            <div class="tag sponsored" ng-if="node.hasOwnProperty('field_pick') && node.field_pick.hasOwnProperty('und') && node.field_pick.und[0].value == '1'">SPONSORED</div>
+            <div class="tag guide" ng-if="node.type == 'guide'">GUIDE</div>
+          </a>
+          <div class="detail-desc"><a href="{{ '/user/' + node.uid }}" target="_blank" class="author" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latestfeatured-author-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latestfeatured-author-' + $index}}">{{ node.name }}</a>, <span class="created">{{ (node.created * 1000) | date:'MMM d' }}</span> - <span ng-bind-html="node.shortBody | sanitize"></span> 
+            <a ui-sref="tabs.node({ path: node.node_url, nid: node.nid, tid: '', page: undefined })" class="read-more" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latestfeatured-readmore-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latestfeatured-readmore-' + $index}}">READ MORE <span class="chevron right"></span></a></div>
+          </div>
+      </div>
+    </div>
+    <div class="latest-side">
+      <div ng-repeat-start="node in latestList | orderBy: '-created'" more-ad slot-num="{{ bigCurrentPage - 1 }}" class="ads more" ng-if="width < 970 && $index > 5 && (($index) % 6 == 0)"></div>
+      <div ng-repeat-end ng-if="$index > 1" class="listing">
+        <a ui-sref="tabs.node({ path: node.node_url, nid: node.nid, tid: '', page: undefined })" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latest-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latest-' + $index}}">
+          <img ng-if="width && width < 970" class="tiles" ng-src="{{node.field_image['und'][0]['uri'] |  s3url : 'image300x250'}}">
+          <div class="detail-title">{{ node.title }}</div>
+          <div class="tag sponsored" ng-if="node.hasOwnProperty('field_pick') && node.field_pick.hasOwnProperty('und') && node.field_pick.und[0].value == '1'">SPONSORED</div>
+          <div class="tag guide" ng-if="node.type == 'guide'">GUIDE</div>
+        </a>
+	<div class="detail-desc"><a href="{{ '/user/' + node.uid }}" target="_blank" class="author" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latest-author-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latest-author-' + $index}}">{{ node.name }}</a>, <span class="created">{{ (node.created * 1000) | date:'MMM d' }}</span> - <span ng-bind-html="node.shortBody | sanitize"></span> <a href ui-sref="tabs.node({ path: node.node_url, nid: node.nid, tid: '', page: undefined })" class="read-more" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latest-readmore-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latest-readmore-' + $index}}">READ MORE <span class="chevron right"></span></a></div>
+      </div>
+    </div>
+  </div>
+  <!--div ng-if="width && width >= 480"  id="latest-pager"-->
+  <div id="latest-pager" ng-hide="width <970 || numPages <= 1">
+    <uib-pagination total-items="latestTotal" ng-model="bigCurrentPage" items-per-page="6" max-size="4" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="clickPager(bigCurrentPage)" analytics-on="click" analytics-category="latest" analytics-event="pagerClick" analytics-label="{{'pager-'+ bigCurrentPage }}" ng-attr-id="{{'pager-'+ bigCurrentPage }}"></uib-pagination>
+  </div>
+  <div id="latest-more" ng-hide="width >=970 || bigCurrentPage >= numPages">
+    <button ng-model="bigCurrentPage" ng-click="clickMore(bigCurrentPage)" analytics-on="click" analytics-category="latest" analytics-event="pagerClick" analytics-label="{{'more-'+ bigCurrentPage }}" ng-attr-id="{{'more-'+ bigCurrentPage }}">LOAD MORE</button>
+  </div>
+</div>
+<!-- NOT a home page -->
+<div ng-if="$state.current.name != 'tabs.home'">
+  <h3 ng-if="$state.current.name == 'tabs.node' && related"><em>Archives</em></h3>
+  <div class="section section-latest">  
+    <div class="latest-side">
+      <div ng-repeat-start="node in latestList | orderBy: '-created'" more-ad slot-num="{{ bigCurrentPage - 1}}" class="ads more" ng-if="width < 970 && $index > 5 && (($index) % 6 == 0)"></div>
+      <div ng-repeat-end class="listing">
+        <div class="tag sponsored" ng-if="node.hasOwnProperty('field_pick') && node.field_pick.hasOwnProperty('und') && node.field_pick.und[0].value == '1'">SPONSORED</div>
+        <a ui-sref="tabs.node({ path: node.node_url, nid: node.nid, tid: '', page: undefined })" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latest-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latest-' + $index}}">
+          <img class="tiles" ng-src="{{node.field_image['und'][0]['uri'] |  s3url : width && width < 1024 ? 'image300x250' : 'image220x190'}}">
+        </a>
+        <a class="text" ui-sref="tabs.node({ path: node.node_url, nid: node.nid, tid: '', page: undefined })" analytics-on="click" analytics-category="latest" analytics-event="contentClick" analytics-label="{{'link-latest-title-' + node.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'link-latest-title-' + $index}}">
+          <div class="detail-title">{{ node.title }}</div>
+	  <div class="detail-desc"><span ng-bind-html="node.shortBody | sanitize"></span> <span class="read-more">READ MORE <span class="chevron right"></span></span></div>
+        </a>
+      </div>
+    </div>
+    <div id="latest-pager" ng-hide="width < 970 || numPages <= 1">
+<uib-pagination total-items="latestTotal" ng-model="bigCurrentPage" items-per-page="6" max-size="6" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="clickPager(bigCurrentPage)" analytics-on="click" analytics-category="latest" analytics-event="pagerClick" analytics-label="{{'pager-'+ bigCurrentPage }}" ng-attr-id="{{'pager-'+ bigCurrentPage }}"></uib-pagination>
+    </div>
+    <div id="latest-more" ng-hide="width >=970 || numPages <= 1 || bigCurrentPage >= numPages">
+      <button ng-model="bigCurrentPage" ng-click="clickMore(bigCurrentPage)" analytics-on="click" analytics-category="latest" analytics-event="pagerClick" analytics-label="{{'more-'+ bigCurrentPage }}" ng-attr-id="{{'more-'+ bigCurrentPage }}">LOAD MORE</button>
+    </div>
+  </div>
+</div>
+

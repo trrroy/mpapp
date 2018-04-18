@@ -1,0 +1,5 @@
+      <a ng-if="item.type == 'event'" class="link-edit" ng-href="{{'/user/' + item.uid + '/contact'}}" target="_self" ng-title="{'event author [' + item.uid + ']'}">Posted by: {{item.name}}</a>
+      <a ng-if="item.hasOwnProperty('nid')" class="link-edit" href="/node/{{item.nid}}/edit" target="_self" ng-title="{'edit node [' + item.type + ']'}"><i class="fa fa-pencil-square-o"></i></a>
+      <a ng-if="item.hasOwnProperty('tid')" class="link-edit" href="/taxonomy/term/{{item.tid}}/edit" target="_self" title="edit term"><i class="fa fa-pencil-square-o"></i></a>
+      <a ng-if="item.hasOwnProperty('term_guide')" class="link-edit" href="/node/{{item.term_guide.nid}}/edit" target="_self" ng-title="{'edit inner guide [' + item.term_guide_type + ']'}"><i class="fa fa-pencil-square-o"></i></a>
+

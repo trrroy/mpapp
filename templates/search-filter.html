@@ -1,0 +1,12 @@
+<!-- as a Dom element -->
+<treecontrol class="tree-light"
+   tree-model="itemList"
+   options="treeOptions" 
+   selected-nodes="selectedNodes"
+   expanded-nodes="expandedNodes"
+   on-selection="clickFilterItem(node, selected)"
+   ng-mouseleave="hideFilters()"
+   analytics-on="click" analytics-event="{{'filterClick-'+ serviceType }}" analytics-category="searchFilters" analytics-label="{{label}}"
+   >{{node.name}}
+</treecontrol>
+

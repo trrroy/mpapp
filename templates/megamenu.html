@@ -1,0 +1,66 @@
+  <div sticky id="mainmenu-wrapper">
+    <div class="content-wrapper">
+      <div id="areamenu-wrapper">
+        <div class="menu-desktop" ng-style="menuDesktopStyle()">
+          <div class="area-button">
+            <a href="#" ng-init="isCollapsed = true" class="area-toggle" ng-click="isCollapsed = !isCollapsed"><nobr>{{areaName ? areaName : 'Pick a Region' }} <span class="chevron-down"></span></nobr></a>
+          </div> 
+        </div><!-- end menu-desktop -->
+        <div class="area-menus" uib-collapse="isCollapsed" ng-mouseleave="isCollapsed = true">
+          <ul>
+            <li ng-class="">
+              <h1>
+              <a ng-if="inNG" href ng-click="collapseMain(isCollapsed); clickArea()">All Regions</a>
+              <a ng-if="!inNG" href="/" target="_self" ng-click="clickArea()">All Regions</a>
+              </h1>
+            </li> 
+            <li ng-repeat="item in areaList track by $index" ng-class="">
+              <h1>
+              <a ng-if="inNG" href ng-click="collapseMain(isCollapsed); clickArea(item)" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="{{'meganav-area-' + item.name}}" ng-attr-id="{{'meganav-area-' + item.name}}">{{item.name}}</a>
+              <a ng-if="!inNG" ng-href="{{item.node_url}}" target="_self" ng-click="clickArea(item)" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="{{'meganav-area-' + item.name}}" ng-attr-id="{{'meganav-area-' + item.name + '-generic'}}">{{item.name}}</a>
+              </h1>
+            </li> 
+          </ul>
+        </div><!-- end area-menus -->
+      </div><!-- end areamenu-wrapper -->
+      <div class="navigation-group-guides">
+        <div class="menu btn-group" ng-class="{'first' : $index == 0}" ng-repeat="item in menuItems track by $index" ng-if="item.link.hidden != '1'" >
+          <a type="button" class="nav-top" href ui-sref="tabs.node({ path: item.link.relative_path, nid: item.nid, page: undefined })" ng-mouseover="closeMenu();item.showsub = !isArray(item.below)" ng-attr-id="{{'meganav-main-first-' + $index}}">
+            {{ item.link.title }} <!--span class="caret" ng-show="checkBelow(item)"></span-->
+          </a>
+        </div>
+      </div>
+    </div><!-- end content-wrapper -->
+    <div ng-if="!areaName" class="submenu navigation-group-guides all-regions" ng-show="item.showsub" ng-repeat="item in menuItems track by $index" ng-mouseleave="closeMenu()" ng-if="item.link.hidden != '1'">
+      <div class="content-wrapper">
+        <div class="msg-all-regions"><h3>Choose your region from the menu on the left to get local.</h3></div>
+      </div>
+    </div>
+    <div ng-if="areaName" class="submenu navigation-group-guides" ng-show="item.showsub" ng-repeat="item in menuItems track by $index" ng-mouseleave="closeMenu()" ng-if="item.link.hidden != '1'">
+      <div class="content-wrapper">
+        <ul>
+          <li ng-repeat="subitem in item.below" ng-mouseover="closeSubs();subitem.showsub = true" ng-if="subitem.link.hidden != '1'">
+            <h2><a type="button" class="nav-second" href ui-sref="tabs.node({ path: subitem.link.relative_path, tid: subitem.link.tid, nid: subitem.link.nid, page: undefined })" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="{{'meganav-main-second-' + subitem.link.title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'meganav-main-second-' + $index}}">
+            {{subitem.link.title}} <span class="chevron right" ng-show="subitem.showsub"></span></a></h2>
+            <!--ul ng-show="subitem.showsub" ng-mouseleave="subitem.showsub = togglesub(subitem.showsub)">
+              <li ng-repeat="subitem in subitem.below">
+                <a type="button" class="btn btn-primary" ui-sref="tabs.node({ path: subitem.link.relative_path, tid: subitem.link.tid, nid: subitem.link.nid })">{{subitem.link.title}}</a>
+              </li>
+            </ul-->
+          </li>
+        </ul>
+        <div class="nav-third-wrapper" ng-repeat="subitem in item.below" ng-show="subitem.showsub" ng-init="subitem.showsub = ($index === 0)" ng-if="subitem.link.hidden != '1'">
+          <div ng-repeat="fc_node in subitem.below" class="listing nav-third" ng-if="fc_node.link.hidden != '1'"> 
+            <h2><a href ui-sref="tabs.node({ path: fc_node.link.relative_path, tid: fc_node.link.tid, nid: fc_node.link.nid, page: undefined })" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="{{'meganav-main-third-' + fc_node.link.link_title.replace(title_replace_pattern, '_').toLowerCase()}}" ng-attr-id="{{'meganav-main-third-' + $index}}">
+              <img class="tiles" ng-src="{{fc_node.link.image_path ? fc_node.link.image_path : 's3://listings-graphic.jpg' |  s3url : 'image220x190' }}" ng-attr-alt="{{fc_node.link.image_title}}" ng-attr-title="{{fc_node.link.image_title}}" data-pin-no-hover="TRUE" >
+              <div class="detail-title-bg" ng-class="{'featured' : fc_node.link.image_level == 'PTNM' || fc_node.link.image_level == 'Premium', 'guide' : fc_node.link.image_type == 'guide'}"></div>
+              <div class="detail-title" ng-class="{'featured' : fc_node.link.image_level == 'PTNM' || fc_node.link.image_level == 'Premium', 'guide' : fc_node.link.image_type == 'guide'}">{{ fc_node.link.link_title }}</div>
+              <div class="tag featured" ng-if="fc_node.link.image_level == 'PTNM' || fc_node.link.image_level == 'Premium'">FEATURED</div>
+              <div class="tag guide" ng-if="fc_node.link.image_type == 'guide'">GUIDE</div>
+            </a></h2>
+          </div><!-- end listing-->
+         </div>
+      </div><!-- end content-wrapper -->
+    </div><!-- end submenu -->
+  </div><!-- end mainmenu-wrapper -->
+

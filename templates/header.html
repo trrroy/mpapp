@@ -1,0 +1,80 @@
+<div ng-if="inNG && $state.current.name != 'tabs.events' && $state.current.name != 'tabs.directory' && $state.current.name != 'tabs.directoryType'" class="widget-wrapper">
+  <div id="finder" class="content-wrapper" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/finder.html'"></div>
+</div>
+<div ng-if="!isMobile && width && width >= 1024" id="header-top-wrapper" class="desktop">
+  <div id="header-top">
+	  <div id="logo-wrapper">
+	    <a href="" ui-sref="tabs.home" title="Home" rel="home" id="logolink" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="logo"><img id="logo" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-logo-name.png'}}" alt="MommyPoppins.com" /><img id="kid" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/red-tote.png'}}" />
+      <!-- img id="tenyr" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-logo-10yr.png'}}" /
+      -->
+      </a>
+      <div id="tagline">Get More out of {{areaName ? areaName : 'Life'}} with Kids</div>
+	  </div>
+    <div id="static-user-links">
+      <a href="/mommy-poppins-business-listings" class="create" alt="Create Listing" title="Create Listing"><i class="fa fa-plus" aria-hidden="true"></i></a>
+      <a href="/user" target="_top" class="profile" alt="My Profile" title="My Profile"><i class="fa fa-user" aria-hidden="true"></i></a>
+      <a href="/user/login" target="_top" class="login" alt="Sign in" title="Sign in"><i class="fa fa-user" aria-hidden="true"></i></a>
+      <a href="/user/logout" target="_top" class="logout" alt="Sign out" title="Sign out"><i class="fa fa-sign-out" aria-hidden="true"></i></a>
+    </div>
+    <div id="searchbox">
+      <input type="text" ng-model="searchSite" placeholder="Search MommyPoppins" ng-keypress="sendSearch($event, searchSite)" analytics-on="click" analytics-event="searchClick" analytics-category="desktopMenu" analytics-label="Search">
+      <div id="extra-buttons">
+        <div class="extra-button contact-button">
+          <a class="contact" ng-init="connectIsCollapsed = true" ng-click="connectIsCollapsed = !connectIsCollapsed" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="Connect" id="extra-connect">CONNECT<!--div class="chevron"> </div--></a>
+          <div class="contact-drop" uib-collapse="connectIsCollapsed" ng-mouseleave="connectIsCollapsed = true">
+            <div><h3><a href="/content/contact?view=html" target="_self" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="ContactUs" id="extra-contactus">Contact Us</a></h3></div>
+            <div><h3><a href="/advertise" target="_self" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="Advertise" id="extra-advertise">Advertise</a></h3></div>
+            <div><h3><a href="/node/add/event" target="_self" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="Submit Event" id="extra-submit-event">Submit Event</a></h3></div>
+          </div><!-- end contact-drop -->
+        </div><!-- end contact-button-->
+        <div class="extra-button">
+          <h1><a class="link" href="" ui-sref="tabs.directory({ area: area.tid })" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="Directory" ng-attr-id="extra-directory">DIRECTORY</a></h1>
+        </div>
+        <div class="extra-button">
+          <h1><a class="link" href="" ui-sref="tabs.events({ 'area[]': area.tid })" analytics-on="click" analytics-event="menuClick" analytics-category="desktopMenu" analytics-label="Calendar" ng-attr-id="extra-calendar">CALENDAR</a></h1>
+        </div>
+      </div><!-- end extra-buttons -->
+   </div><!-- end searchbox-->
+  </div>
+  <div ng-if="inNG" id="header-bottom">
+      <div ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/megamenu.html'" ng-controller="MenuController" ng-init="menuType = 'guideMenu'"></div>
+  </div><!-- end header-bottom -->
+</div>
+
+
+
+
+<div ng-if="isMobile || (!isMobile && width && width < 1024)" id="header-top-wrapper" class="mobile" sticky disabled-sticky="!mobileIsCollapsed()">
+  <div id="header-top">
+	  <div id="logo-wrapper">
+	    <a href ui-sref="tabs.home" title="Home" rel="home" id="logolink"><img id="logo" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-logo-name.png'}}" alt="MommyPoppins.com" /><img id="kid" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/red-tote.png'}}" />
+      <!-- img id="tenyr" ng-src="{{domainStatic + '/sites/all/themes/mp_world/images/mp-logo-10yr.png'}}" /></a
+      -->
+	  </div>
+    <div id="areamenu-wrapper">
+      <div class="area-button">
+        <a href="#" class="area-toggle" id="mobileheader-area-button" ng-click="mobileAreaCollapsed = !mobileAreaCollapsed"><nobr>{{areaName ? areaName : 'Pick a Region' }} <span class="chevron-down"></span></nobr></a>
+      </div> 
+      <div class="area-menus" uib-collapse="mobileAreaCollapsed" ng-mouseleave="mobileAreaCollapsed = true">
+        <ul>
+          <li ng-class="">
+            <h1>
+            <a ng-if="inNG" ui-sref="tabs.home({ path: '/' })" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="AllRegions" id="areamenu-allregions">All Regions</a>
+            <a ng-if="!inNG" ng-href="/" target="_self" ng-click="clickArea()" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="AllRegions" id="areamenu-allregions-generic">All Regions</a>
+            </h1>
+          </li> 
+          <li ng-repeat="item in areaList track by $index" ng-class="">
+            <h1>
+            <a ng-if="inNG" href ng-click="$parent.$parent.mobileAreaCollapsed = true; clickArea(item)" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="{{'areamenu-' + item.name}}" ng-attr-id="{{'areamenu-' + item.name}}">{{item.name}}</a>
+            <a ng-if="!inNG" href ng-href="{{ item.node_url }}" target="_self" ng-click="clickArea(item)" analytics-on="click" analytics-event="menuClick" analytics-category="mobileMenu" analytics-label="{{'areamenu-' + item.name}}" ng-attr-id="{{'areamenu-' + item.name + '-generic'}}">{{item.name}}</a>
+            </h1>
+          </li> 
+        </ul>
+      </div><!-- end area-menus -->
+    </div><!-- end areamenu-wrapper -->
+    <div ng-if="areaName" id="mobile-menu-wrapper">
+        <div id="navigation-group-guides" class="mobile" ng-include="" src="domainStatic + '/sites/all/themes/mp_world/templates/mobilemenu.html?1'" ng-controller="MenuController" ng-init="menuType = 'guideMenu'"></div>
+    </div><!-- end mobile-menu-wrapper -->
+  </div><!-- header-top -->
+</div><!-- header-top-wrapper -->
+

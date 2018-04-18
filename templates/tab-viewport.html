@@ -1,0 +1,7 @@
+  <div id="tab-contents">
+    <div ui-view="directory" id="directory-state" ng-show="$state.current.name == 'tabs.directory' || $state.current.name == 'tabs.directoryType'"></div>
+    <div ui-view="events" id="events-state" ng-show="$state.current.name == 'tabs.events'"></div>
+    <div ui-view="search" id="search-state" ng-show="$state.current.name == 'tabs.search'"></div>
+    <div ui-view="node" id="node-state" ng-show="($state.current.name == 'tabs.node' || $state.current.name == 'tabs.home' || $state.current.name == 'tabs' || $state.current.name == '')"></div>
+  </div>
+
