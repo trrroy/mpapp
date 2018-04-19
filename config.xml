@@ -17,4 +17,6 @@
       Troy Dohner
   </author>
 
+  <access origin="https://mommypoppins.com" />
+  <allow-navigation href="https://mommypoppins.com"/>
 </widget>
