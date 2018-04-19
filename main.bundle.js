@@ -60,8 +60,6 @@ var AppComponent = /** @class */ (function () {
             .subscribe(function (eventitems) { return _this.eventitems = eventitems; });
     };
     AppComponent.prototype.ngOnInit = function () {
-        var e = document.getElementById('blarg2');
-        console.log('4txt: ' + e.textContent);
         this.getEventitems();
     };
     AppComponent = __decorate([
