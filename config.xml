@@ -17,6 +17,9 @@
       Troy Dohner
   </author>
 
+  <plugin name="cordova-plugin-whitelist">
   <access origin="https://mommypoppins.com" />
-  <allow-navigation href="https://mommypoppins.com"/>
+  <allow-navigation href="https://mommypoppins.com/*"/>
+  <allow-intent href="https://mommypoppins.com/*"/>
+
 </widget>
