@@ -152,7 +152,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var ContentService = /** @class */ (function () {
     function ContentService(http) {
         this.http = http;
-        this.serviceUrl = 'http://test.mommypoppins.com/contentasjson/custom_data/eventcal/118'; // URL to web api
+        this.serviceUrl = 'https://mommypoppins.com/contentasjson/custom_data/eventcal/118'; // URL to web api
     }
     ContentService.prototype.getEventitems = function () {
         return this.http.get(this.serviceUrl);
