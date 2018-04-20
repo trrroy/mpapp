@@ -24,8 +24,4 @@
   <allow-intent href="https://mommypoppins.com/*"/>
 
   <plugin name="cordova-plugin-geolocation" />
-  <platform name="android">
-        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-        <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-  </platform>
 </widget>
