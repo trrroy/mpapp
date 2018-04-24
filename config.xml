@@ -23,9 +23,14 @@
   <allow-navigation href="http://test.mommypoppins.com/*"/>
   <allow-intent href="http://test.mommypoppins.com/*"/>
 
-  <plugin name="cordova-plugin-geolocation" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-  <plugin name="cordova-plugin-inappbrowser" />
+  <plugin name="cordova-plugin-android-permissions" />
+
+	<platform name="android">
+	  <config-file target="AndroidManifest.xml" parent="/manifest">
+	  <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+	  <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+	  <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+	  </config-file>
+	</platform>
 </widget>
 
