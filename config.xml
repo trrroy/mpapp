@@ -18,9 +18,10 @@
   </author>
 
   <plugin name="cordova-plugin-whitelist" spec="1.3.3" />
-  <access origin="https://mommypoppins.com" />
+  <access origin="http://test.mommypoppins.com" />
   <access origin="*" />
-  <allow-intent href="https://mommypoppins.com/*"/>
+  <allow-navigation href="http://test.mommypoppins.com/*"/>
+  <allow-intent href="http://test.mommypoppins.com/*"/>
 
   <plugin name="cordova-plugin-geolocation" />
   <plugin name="cordova-plugin-inappbrowser" />
